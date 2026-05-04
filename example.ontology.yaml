@@ -1,0 +1,52 @@
+ontology:
+  displayName: SalesOntology_v1
+  description: Simple sales ontology created from YAML
+  namespace: usertypes
+
+entities:
+  - name: Customer
+    key: customer_id
+    display: name
+    properties:
+      - { name: customer_id, type: string }
+      - { name: name, type: string }
+      - { name: city, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+          schema: dbo
+        propertyBindings:
+          customer_id: customer_id
+          name: name
+          city: city
+
+  - name: Order
+    key: order_id
+    display: order_number
+    properties:
+      - { name: order_id, type: string }
+      - { name: order_number, type: string }
+      - { name: customer_id, type: string }
+      - { name: amount, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: orders
+          schema: dbo
+        propertyBindings:
+          order_id: order_id
+          order_number: order_number
+          customer_id: customer_id
+          amount: amount
+
+relationships:
+  - name: OrderBelongsToCustomer
+    source_entity: Order
+    target_entity: Customer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: orders
+        sourceColumn: order_id
+        targetColumn: customer_id

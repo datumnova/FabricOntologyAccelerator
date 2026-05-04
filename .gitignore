@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.tmp
+fabric_ontology_payload.json
+fabric_ontology_payload.result.json
