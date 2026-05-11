@@ -572,8 +572,8 @@ requires-dist = [
     { name = "mcp", marker = "extra == 'suggest'", specifier = ">=1.0.0" },
     { name = "openai", marker = "extra == 'suggest'", specifier = ">=1.0.0" },
     { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pyyaml", specifier = "==6.0.3" },
-    { name = "requests", specifier = "==2.33.1" },
+    { name = "pyyaml", specifier = ">=6.0" },
+    { name = "requests", specifier = ">=2.31" },
 ]
 provides-extras = ["suggest"]
 

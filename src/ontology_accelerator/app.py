@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import logging
 import os
 from pathlib import Path
 
@@ -6,10 +9,11 @@ from .fabric_api import FabricLakehouseResolver, create_or_update
 from .io_utils import load_yaml, write_output, write_yaml
 from .validation import config_uses_lakehouse_names, validate_config
 
+log = logging.getLogger(__name__)
 
-def _resolve_token(args):
-    token = args.token or os.environ.get("FABRIC_TOKEN")
-    return token
+
+def _resolve_token(args) -> str | None:
+    return args.token or os.environ.get("FABRIC_TOKEN")
 
 
 def _load_config(args, token):
@@ -193,12 +197,12 @@ def run(args):
         database_name=getattr(args, "database_name", None),
     )
     write_output(args.output, payload)
-    print(f"Wrote payload to {args.output}")
+    log.info("Wrote payload to %s", args.output)
 
     # Optionally write resolved config as YAML
     if getattr(args, "output_yaml", None):
         write_yaml(args.output_yaml, cfg)
-        print(f"Wrote ontology YAML to {args.output_yaml}")
+        log.info("Wrote ontology YAML to %s", args.output_yaml)
 
     if args.apply:
         if not args.workspace_id:
@@ -206,4 +210,4 @@ def run(args):
         result = create_or_update(args, payload)
         api_out = str(Path(args.output).with_suffix(".result.json"))
         write_output(api_out, result)
-        print(f"Wrote API result to {api_out}")
+        log.info("Wrote API result to %s", api_out)

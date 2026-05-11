@@ -56,7 +56,7 @@ def _decode_part(part: dict) -> dict | None:
     try:
         raw = base64.b64decode(payload).decode("utf-8")
         return json.loads(raw)
-    except Exception:
+    except (ValueError, json.JSONDecodeError):
         return None
 
 

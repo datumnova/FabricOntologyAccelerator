@@ -1,11 +1,11 @@
+from __future__ import annotations
+
 import base64
 import json
 import random
 import uuid
 
-_used_ids = set()
-
-TYPE_MAP = {
+TYPE_MAP: dict[str, str] = {
     "string": "String",
     "str": "String",
     "int": "BigInt",
@@ -31,15 +31,22 @@ def to_b64(obj):
     return base64.b64encode(json.dumps(obj, separators=(",", ":")).encode("utf-8")).decode("utf-8")
 
 
-def generate_id():
-    while True:
-        val = str(random.randint(10**12, 10**15))
-        if val not in _used_ids:
-            _used_ids.add(val)
-            return val
+def _make_id_generator(rng: random.Random) -> callable:
+    """Return a closure that generates unique numeric ID strings."""
+    used: set[str] = set()
+
+    def generate_id() -> str:
+        for _ in range(10_000):
+            val = str(rng.randint(10**12, 10**15))
+            if val not in used:
+                used.add(val)
+                return val
+        raise RuntimeError("Unable to generate a unique ID after 10 000 attempts")
+
+    return generate_id
 
 
-def normalize_type(value):
+def normalize_type(value) -> str:
     if value is None:
         return "String"
     key = str(value).strip().lower()
@@ -137,8 +144,8 @@ def _build_eventhouse_source(source, default_workspace_id, default_eventhouse_id
 
 def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehouse_resolver=None,
                      eventhouse_id=None, cluster_uri=None, database_name=None):
-    random.seed(seed)
-    _used_ids.clear()
+    rng = random.Random(seed)
+    generate_id = _make_id_generator(rng)
 
     ontology_name = cfg.get("ontology", {}).get("displayName") or cfg.get("displayName") or "OntologyFromYaml"
     ontology_description = cfg.get("ontology", {}).get("description") or cfg.get("description") or "Created from YAML"
@@ -169,6 +176,18 @@ def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehou
                 }
             )
 
+        ts_props = []
+        for prop in entity.get("timeseriesProperties", []):
+            prop_id = generate_id()
+            property_ids[(entity_name, prop["name"])] = prop_id
+            ts_props.append(
+                {
+                    "id": prop_id,
+                    "name": prop["name"],
+                    "valueType": normalize_type(prop.get("type")),
+                }
+            )
+
         entity_def = {
             "id": entity_id,
             "namespace": entity.get("namespace", namespace),
@@ -179,7 +198,7 @@ def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehou
             "namespaceType": entity.get("namespaceType", "Custom"),
             "visibility": entity.get("visibility", "Visible"),
             "properties": props,
-            "timeseriesProperties": entity.get("timeseriesProperties", []),
+            "timeseriesProperties": ts_props,
         }
         parts.append(
             {

@@ -1,6 +1,19 @@
 import argparse
+import logging
+import sys
 
 from .app import run
+
+log = logging.getLogger(__name__)
+
+
+def _get_version() -> str:
+    try:
+        from importlib.metadata import version
+
+        return version("ontology-accelerator")
+    except Exception:
+        return "0.0.0-dev"
 
 
 def parse_args(argv=None):
@@ -58,6 +71,12 @@ def parse_args(argv=None):
         action="store_true",
         help="Pass updateMetadata=true when updating definition",
     )
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose (DEBUG) logging",
+    )
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {_get_version()}",
+    )
 
     # --- AI agent options (for --suggest) – ALPHA ---
     agent_group = parser.add_argument_group("AI agent options — ALPHA (used with --suggest)")
@@ -96,7 +115,16 @@ def parse_args(argv=None):
 
 
 def main(argv=None):
-    run(parse_args(argv))
+    args = parse_args(argv)
+    logging.basicConfig(
+        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
+    try:
+        run(args)
+    except (ValueError, FileNotFoundError) as exc:
+        log.error("%s", exc)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

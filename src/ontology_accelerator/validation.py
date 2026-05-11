@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 _VALID_SOURCE_TYPES = {"LakehouseTable", "KustoTable"}
 
 
