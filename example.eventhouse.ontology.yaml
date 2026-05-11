@@ -1,0 +1,67 @@
+ontology:
+  displayName: SalesOntology_v1
+  description: Simple sales ontology created from YAML
+  namespace: usertypes
+
+entities:
+  - name: Customer
+    key: customer_id
+    display: name
+    properties:
+      - { name: customer_id, type: string }
+      - { name: name, type: string }
+      - { name: city, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+          schema: dbo
+        propertyBindings:
+          customer_id: customer_id
+          name: name
+          city: city
+
+  - name: Equipment
+    key: equipment_id
+    display: display_name
+    properties:
+      - { name: equipment_id, type: string }
+      - { name: display_name, type: string }
+    timeseriesProperties:
+      - { name: timestamp, type: datetime }
+      - { name: temperature, type: double }
+      - { name: pressure, type: double }
+    bindings:
+      # Non-timeseries binding from Lakehouse for static properties
+      - source:
+          sourceType: LakehouseTable
+          table: equipment
+          schema: dbo
+        propertyBindings:
+          equipment_id: equipment_id
+          display_name: display_name
+      # TimeSeries binding from Eventhouse (KQL DB)
+      - dataBindingType: TimeSeries
+        timestampColumnName: timestamp
+        source:
+          sourceType: KustoTable
+          table: equipment_telemetry
+          # These can also be provided via --eventhouse-id, --cluster-uri, --database-name
+          # eventhouseId: <guid>
+          # clusterUri: https://mycluster.kusto.fabric.microsoft.com
+          # databaseName: TelemetryDB
+        propertyBindings:
+          timestamp: timestamp
+          temperature: temperature
+          pressure: pressure
+
+relationships:
+  - name: EquipmentBelongsToCustomer
+    source_entity: Equipment
+    target_entity: Customer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: equipment
+        sourceColumn: equipment_id
+        targetColumn: customer_id

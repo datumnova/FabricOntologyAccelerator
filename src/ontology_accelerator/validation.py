@@ -1,3 +1,6 @@
+_VALID_SOURCE_TYPES = {"LakehouseTable", "KustoTable"}
+
+
 def validate_config(cfg):
     entities = cfg.get("entities") or []
     if not entities:
@@ -26,6 +29,23 @@ def validate_config(cfg):
         display = entity.get("display") or key
         if display not in prop_names:
             raise ValueError(f"Entity '{name}' display '{display}' was not found in properties")
+
+        # Validate bindings
+        for binding in entity.get("bindings", []):
+            source = binding.get("source", {})
+            source_type = source.get("sourceType", "LakehouseTable")
+            if source_type not in _VALID_SOURCE_TYPES:
+                raise ValueError(
+                    f"Entity '{name}' binding has unsupported sourceType '{source_type}'. "
+                    f"Allowed: {', '.join(sorted(_VALID_SOURCE_TYPES))}"
+                )
+            if source_type == "KustoTable":
+                binding_type = binding.get("dataBindingType", "NonTimeSeries")
+                if binding_type != "TimeSeries":
+                    raise ValueError(
+                        f"Entity '{name}': Eventhouse (KustoTable) bindings are only "
+                        f"allowed with dataBindingType 'TimeSeries', got '{binding_type}'"
+                    )
 
     for rel in cfg.get("relationships") or []:
         if rel.get("source_entity") not in names:

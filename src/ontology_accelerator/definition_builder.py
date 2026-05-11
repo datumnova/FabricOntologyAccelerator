@@ -8,9 +8,10 @@ _used_ids = set()
 TYPE_MAP = {
     "string": "String",
     "str": "String",
-    "int": "Int64",
-    "integer": "Int64",
-    "long": "Int64",
+    "int": "BigInt",
+    "integer": "BigInt",
+    "long": "BigInt",
+    "bigint": "BigInt",
     "float": "Double",
     "double": "Double",
     "number": "Double",
@@ -19,9 +20,10 @@ TYPE_MAP = {
     "boolean": "Boolean",
     "datetime": "DateTime",
     "timestamp": "DateTime",
-    "date": "Date",
-    "time": "Time",
-    "guid": "Guid",
+    "date": "DateTime",
+    "time": "DateTime",
+    "object": "Object",
+    "json": "Object",
 }
 
 
@@ -75,7 +77,14 @@ def _resolve_source_lakehouse_id(source, workspace_id, default_lakehouse_id, lak
     return default_lakehouse_id
 
 
-def _build_source_table_properties(source, default_workspace_id, default_lakehouse_id, lakehouse_resolver):
+def _build_source_table_properties(source, default_workspace_id, default_lakehouse_id, lakehouse_resolver,
+                                    eventhouse_id=None, cluster_uri=None, database_name=None):
+    source_type = source.get("sourceType", "LakehouseTable")
+
+    if source_type == "KustoTable":
+        return _build_eventhouse_source(source, default_workspace_id,
+                                        eventhouse_id, cluster_uri, database_name)
+
     workspace_id = _resolve_source_workspace_id(source, default_workspace_id)
     lakehouse_id = _resolve_source_lakehouse_id(
         source=source,
@@ -89,7 +98,7 @@ def _build_source_table_properties(source, default_workspace_id, default_lakehou
         raise ValueError("Binding source requires 'table' or 'sourceTableName'.")
 
     source_table = {
-        "sourceType": source.get("sourceType", "LakehouseTable"),
+        "sourceType": "LakehouseTable",
         "workspaceId": workspace_id,
         "itemId": lakehouse_id,
         "sourceTableName": source_table_name,
@@ -99,7 +108,35 @@ def _build_source_table_properties(source, default_workspace_id, default_lakehou
     return source_table
 
 
-def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehouse_resolver=None):
+def _build_eventhouse_source(source, default_workspace_id, default_eventhouse_id=None,
+                             default_cluster_uri=None, default_database_name=None):
+    workspace_id = source.get("workspaceId") or default_workspace_id
+    item_id = source.get("itemId") or source.get("eventhouseId") or default_eventhouse_id
+    cluster_uri = source.get("clusterUri") or default_cluster_uri
+    database_name = source.get("databaseName") or default_database_name
+    source_table_name = source.get("table") or source.get("sourceTableName")
+
+    if not item_id:
+        raise ValueError("Eventhouse binding requires 'itemId' or 'eventhouseId' (or --eventhouse-id).")
+    if not cluster_uri:
+        raise ValueError("Eventhouse binding requires 'clusterUri' (or --cluster-uri).")
+    if not database_name:
+        raise ValueError("Eventhouse binding requires 'databaseName' (or --database-name).")
+    if not source_table_name:
+        raise ValueError("Eventhouse binding requires 'table' or 'sourceTableName'.")
+
+    return {
+        "sourceType": "KustoTable",
+        "workspaceId": workspace_id,
+        "itemId": item_id,
+        "clusterUri": cluster_uri,
+        "databaseName": database_name,
+        "sourceTableName": source_table_name,
+    }
+
+
+def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehouse_resolver=None,
+                     eventhouse_id=None, cluster_uri=None, database_name=None):
     random.seed(seed)
     _used_ids.clear()
 
@@ -164,18 +201,24 @@ def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehou
                 )
 
             source = binding.get("source", {})
+            binding_cfg = {
+                "dataBindingType": binding.get("dataBindingType", "NonTimeSeries"),
+                "propertyBindings": property_bindings,
+                "sourceTableProperties": _build_source_table_properties(
+                    source=source,
+                    default_workspace_id=workspace_id,
+                    default_lakehouse_id=lakehouse_id,
+                    lakehouse_resolver=lakehouse_resolver,
+                    eventhouse_id=eventhouse_id,
+                    cluster_uri=cluster_uri,
+                    database_name=database_name,
+                ),
+            }
+            if binding.get("timestampColumnName"):
+                binding_cfg["timestampColumnName"] = binding["timestampColumnName"]
             data_binding = {
                 "id": binding_id,
-                "dataBindingConfiguration": {
-                    "dataBindingType": binding.get("dataBindingType", "NonTimeSeries"),
-                    "propertyBindings": property_bindings,
-                    "sourceTableProperties": _build_source_table_properties(
-                        source=source,
-                        default_workspace_id=workspace_id,
-                        default_lakehouse_id=lakehouse_id,
-                        lakehouse_resolver=lakehouse_resolver,
-                    ),
-                },
+                "dataBindingConfiguration": binding_cfg,
             }
             parts.append(
                 {
@@ -225,6 +268,9 @@ def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehou
                     default_workspace_id=workspace_id,
                     default_lakehouse_id=lakehouse_id,
                     lakehouse_resolver=lakehouse_resolver,
+                    eventhouse_id=eventhouse_id,
+                    cluster_uri=cluster_uri,
+                    database_name=database_name,
                 ),
                 "sourceKeyRefBindings": [
                     {
