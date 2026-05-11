@@ -1,5 +1,8 @@
 """AI agent that suggests business ontologies by discovering Fabric data sources.
 
+.. warning:: **ALPHA** — This module is experimental and subject to breaking
+   changes.  It is not covered by the project's stability guarantees.
+
 Connects to the official Fabric Core MCP Server for workspace / item discovery
 and uses Azure OpenAI (or OpenAI) for reasoning.  Outputs a suggested ontology
 YAML config and human-readable rationale.
@@ -476,6 +479,8 @@ async def _run_agent(config: dict) -> dict:
 def suggest(config: dict) -> dict:
     """Run the suggestion agent.
 
+    .. warning:: **ALPHA** — This function is experimental.
+
     Parameters
     ----------
     config : dict
@@ -488,4 +493,10 @@ def suggest(config: dict) -> dict:
     dict
         ``{"config": <parsed_yaml_dict | None>, "rationale": str, "raw": str}``
     """
+    import warnings
+    warnings.warn(
+        "The --suggest AI agent is an ALPHA feature. "
+        "Behaviour and API may change without notice.",
+        stacklevel=2,
+    )
     return asyncio.run(_run_agent(config))

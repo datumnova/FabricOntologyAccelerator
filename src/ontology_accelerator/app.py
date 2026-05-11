@@ -98,7 +98,16 @@ def _build_suggest_config(args, token):
 
 
 def run_suggest(args):
-    """Run the AI suggestion agent and save results."""
+    """Run the AI suggestion agent and save results.
+
+    .. warning:: ALPHA feature — subject to breaking changes.
+    """
+    import warnings
+    warnings.warn(
+        "The --suggest AI agent is an ALPHA feature. "
+        "Behaviour and API may change without notice.",
+        stacklevel=2,
+    )
     token = _resolve_token(args)
     if not token:
         raise ValueError(

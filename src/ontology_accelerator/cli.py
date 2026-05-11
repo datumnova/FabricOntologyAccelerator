@@ -18,7 +18,7 @@ def parse_args(argv=None):
     )
     input_group.add_argument(
         "--suggest", action="store_true",
-        help="Use an AI agent to discover Fabric data and suggest an ontology",
+        help="[ALPHA] Use an AI agent to discover Fabric data and suggest an ontology",
     )
 
     # --- Enrichment (can be combined with --yaml or --excel) ---
@@ -59,8 +59,8 @@ def parse_args(argv=None):
         help="Pass updateMetadata=true when updating definition",
     )
 
-    # --- AI agent options (for --suggest) ---
-    agent_group = parser.add_argument_group("AI agent options (used with --suggest)")
+    # --- AI agent options (for --suggest) – ALPHA ---
+    agent_group = parser.add_argument_group("AI agent options — ALPHA (used with --suggest)")
     agent_group.add_argument(
         "--azure-openai-endpoint",
         help="Azure OpenAI endpoint URL (or set AZURE_OPENAI_ENDPOINT)",
