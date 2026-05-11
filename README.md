@@ -1,6 +1,6 @@
 # Fabric Ontology Accelerator
 
-Python CLI that creates Microsoft Fabric Ontology payloads from **YAML**, **Excel workbooks**, or **Fabric semantic models**, and can optionally push them to the Fabric REST API.  An **AI agent** mode can discover data across workspaces and suggest ontologies automatically.
+Python CLI that creates Microsoft Fabric Ontology payloads from **YAML**, **Excel workbooks**, or **Fabric semantic models**, and can optionally push them to the Fabric REST API.
 
 ## What it supports
 
@@ -10,7 +10,6 @@ Python CLI that creates Microsoft Fabric Ontology payloads from **YAML**, **Exce
 - Relationship contextualizations (bindings)
 - **Excel import** – define entities and relationships in a spreadsheet
 - **Semantic model enrichment** – pull tables/columns/relationships from a Power BI semantic model and enrich an existing ontology
-- **AI-powered suggestion** – an agent connects to the Fabric Core MCP Server, discovers data sources across workspaces, and proposes a business ontology
 - Optional direct call to the Fabric REST API
 
 ## YAML shape
@@ -51,8 +50,7 @@ relationships:
 ## Install
 
 ```bash
-uv sync                   # core features
-uv sync --extra suggest   # + AI agent (openai, mcp)
+uv sync
 ```
 
 ## Generate payload from YAML
@@ -173,59 +171,6 @@ Windows PowerShell token example:
 $env:FABRIC_TOKEN = '<entra-access-token>'
 ```
 
-## AI-powered ontology suggestion
-
-The `--suggest` mode uses an AI agent that:
-
-1. Connects to the [Fabric Core MCP Server](https://learn.microsoft.com/en-us/rest/api/fabric/articles/mcp-servers/core-remote/overview-core-mcp-server) to discover workspaces and items
-2. Inspects schemas — semantic model definitions, lakehouse tables, KQL databases
-3. Samples data to understand content and infer relationships
-4. Proposes a complete ontology YAML with rationale
-
-### With Azure OpenAI (recommended)
-
-```bash
-export FABRIC_TOKEN='<entra-access-token>'
-export AZURE_OPENAI_ENDPOINT='https://<resource>.openai.azure.com'
-export AZURE_OPENAI_DEPLOYMENT='gpt-4o'
-export AZURE_OPENAI_KEY='<api-key>'          # or omit to use FABRIC_TOKEN as AD token
-
-uv run fabric-ontology --suggest
-```
-
-### With OpenAI
-
-```bash
-export FABRIC_TOKEN='<entra-access-token>'
-export OPENAI_API_KEY='sk-...'
-
-uv run fabric-ontology --suggest
-```
-
-### Scoped to a workspace
-
-```bash
-uv run fabric-ontology --suggest \
-  --workspace-id <workspace-id> \
-  --output-yaml suggested.ontology.yaml
-```
-
-### With a user hint
-
-```bash
-uv run fabric-ontology --suggest \
-  --suggest-hint "Focus on IoT telemetry data and equipment maintenance"
-```
-
-The agent writes the suggested ontology to `suggested.ontology.yaml` (or `--output-yaml`).  Review and edit it, then build the payload:
-
-```bash
-uv run fabric-ontology --yaml suggested.ontology.yaml \
-  --workspace-id <workspace-id> \
-  --lakehouse-id <lakehouse-id> \
-  --output payload.json --apply --wait
-```
-
 ## Notes
 
 - The tool writes the create payload to JSON even when `--apply` is used.
@@ -236,7 +181,7 @@ uv run fabric-ontology --yaml suggested.ontology.yaml \
 - Relationship bindings are emitted as `RelationshipTypes/<id>/Contextualizations/<guid>.json` parts.
 - Eventhouse (KustoTable) bindings are only allowed with `dataBindingType: TimeSeries`.
 - Use `--output-yaml` with `--excel` or `--from-semantic-model` to export the resolved config as YAML for inspection.
-- The `--enrich-from-model` flag can be combined with any input source (`--yaml` or `--excel`) to add missing entities/properties from a semantic model.
+- The `--enrich-from-model` flag can be combined with `--yaml` or `--excel` to add missing entities/properties from a semantic model.
 
 ## Bind to a lakehouse by name
 

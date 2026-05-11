@@ -1,6 +1,19 @@
 import argparse
+import logging
+import sys
 
 from .app import run
+
+log = logging.getLogger(__name__)
+
+
+def _get_version() -> str:
+    try:
+        from importlib.metadata import version
+
+        return version("ontology-accelerator")
+    except Exception:
+        return "0.0.0-dev"
 
 
 def parse_args(argv=None):
@@ -15,10 +28,6 @@ def parse_args(argv=None):
     input_group.add_argument(
         "--from-semantic-model", dest="semantic_model_id",
         help="Fabric semantic model ID to generate ontology from",
-    )
-    input_group.add_argument(
-        "--suggest", action="store_true",
-        help="Use an AI agent to discover Fabric data and suggest an ontology",
     )
 
     # --- Enrichment (can be combined with --yaml or --excel) ---
@@ -47,7 +56,7 @@ def parse_args(argv=None):
     )
     parser.add_argument(
         "--output-yaml",
-        help="Write the resolved ontology config to a YAML file (useful with --excel, --from-semantic-model, or --suggest)",
+        help="Write the resolved ontology config to a YAML file (useful with --excel or --from-semantic-model)",
     )
     parser.add_argument("--apply", action="store_true", help="Call the Fabric REST API")
     parser.add_argument(
@@ -58,45 +67,27 @@ def parse_args(argv=None):
         action="store_true",
         help="Pass updateMetadata=true when updating definition",
     )
-
-    # --- AI agent options (for --suggest) ---
-    agent_group = parser.add_argument_group("AI agent options (used with --suggest)")
-    agent_group.add_argument(
-        "--azure-openai-endpoint",
-        help="Azure OpenAI endpoint URL (or set AZURE_OPENAI_ENDPOINT)",
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose (DEBUG) logging",
     )
-    agent_group.add_argument(
-        "--azure-openai-deployment",
-        help="Azure OpenAI deployment/model name (or set AZURE_OPENAI_DEPLOYMENT)",
-    )
-    agent_group.add_argument(
-        "--azure-openai-key",
-        help="Azure OpenAI API key (or set AZURE_OPENAI_KEY). If omitted, uses Fabric token as AD token.",
-    )
-    agent_group.add_argument(
-        "--azure-openai-api-version",
-        default=None,
-        help="Azure OpenAI API version (default: 2024-12-01-preview)",
-    )
-    agent_group.add_argument(
-        "--openai-api-key",
-        help="OpenAI API key (or set OPENAI_API_KEY). Used when Azure endpoint is not set.",
-    )
-    agent_group.add_argument(
-        "--openai-model",
-        default=None,
-        help="OpenAI model name (default: gpt-4o)",
-    )
-    agent_group.add_argument(
-        "--suggest-hint",
-        help="Additional context or focus areas for the AI agent",
+    parser.add_argument(
+        "--version", action="version", version=f"%(prog)s {_get_version()}",
     )
 
     return parser.parse_args(argv)
 
 
 def main(argv=None):
-    run(parse_args(argv))
+    args = parse_args(argv)
+    logging.basicConfig(
+        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        format="%(levelname)s: %(message)s",
+    )
+    try:
+        run(args)
+    except (ValueError, FileNotFoundError) as exc:
+        log.error("%s", exc)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

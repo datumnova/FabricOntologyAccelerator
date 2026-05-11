@@ -1,8 +1,13 @@
+from __future__ import annotations
+
 import json
+import logging
 import os
 import time
 
 import requests
+
+log = logging.getLogger(__name__)
 
 
 def auth_headers(token):

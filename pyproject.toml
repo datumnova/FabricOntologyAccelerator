@@ -4,21 +4,22 @@ version = "0.1.0"
 description = "CLI to create Microsoft Fabric ontology payloads from YAML, Excel, or semantic models"
 readme = "README.md"
 requires-python = ">=3.10"
+license = "MIT"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
 dependencies = [
     "openpyxl>=3.1.5",
-    "pyyaml==6.0.3",
-    "requests==2.33.1",
-]
-
-[project.optional-dependencies]
-suggest = [
-    "openai>=1.0.0",
-    "mcp>=1.0.0",
+    "pyyaml>=6.0",
+    "requests>=2.31",
 ]
 
 [project.scripts]
 fabric-ontology = "ontology_accelerator.cli:main"
-fabric-ontology-from-yaml = "ontology_accelerator.cli:main"
 
 [build-system]
 requires = ["hatchling>=1.27.0"]
