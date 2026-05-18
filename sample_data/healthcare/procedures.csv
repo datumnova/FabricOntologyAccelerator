@@ -1,0 +1,4 @@
+procedure_id,patient_id,encounter_id,practitioner_id,code_system,code,code_display,status,performed_at,outcome
+PROC001,PT0004,ENC003,PRA003,CPT,92928,Percutaneous coronary intervention,completed,2026-03-03T08:00:00Z,successful
+PROC002,PT0003,ENC005,PRA002,CPT,93010,ECG report,completed,2026-05-05T15:15:00Z,normal
+PROC003,PT0005,ENC006,PRA003,CPT,25600,Closed treatment distal radial fracture,completed,2026-05-10T21:30:00Z,successful

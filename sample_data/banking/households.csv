@@ -1,0 +1,5 @@
+household_id,household_name,household_segment,total_aum,member_count
+H001,Martin-Dupont,affluent,425000.00,2
+H002,Rossi,mass,18500.00,1
+H003,Schmidt,private,2100000.00,1
+H004,Larsen,mass,3200.00,1

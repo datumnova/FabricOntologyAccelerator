@@ -1,0 +1,405 @@
+# Insurance - P&C Policy + Claims Accelerator
+# Aligned to the ACORD Reference Architecture / Information Model
+# (Party, Policy, Coverage, RiskObject, Claim, ClaimFeature, FinancialTransaction, Producer).
+#
+# Business value:
+#   - Underwriting and loss ratio analytics across lines of business
+#   - Claims triage: severity, fraud likelihood, subrogation potential
+#   - Producer (agent/broker) performance and book-of-business analysis
+#   - Foundation for a Copilot "claims handler / underwriter assistant"
+
+ontology:
+  displayName: PandCPolicyClaims
+  description: Property & Casualty insurance policy and claims ontology (ACORD aligned)
+  namespace: insurance
+
+entities:
+  - name: Party
+    key: party_id
+    display: display_name
+    properties:
+      - { name: party_id, type: string }
+      - { name: display_name, type: string }
+      - { name: party_type, type: string }     # person, organization
+      - { name: date_of_birth, type: datetime }
+      - { name: gender, type: string }
+      - { name: email, type: string }
+      - { name: phone, type: string }
+      - { name: address_line1, type: string }
+      - { name: city, type: string }
+      - { name: state_or_region, type: string }
+      - { name: postal_code, type: string }
+      - { name: country, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: parties
+          schema: dbo
+        propertyBindings:
+          party_id: party_id
+          display_name: display_name
+          party_type: party_type
+          date_of_birth: date_of_birth
+          gender: gender
+          email: email
+          phone: phone
+          address_line1: address_line1
+          city: city
+          state_or_region: state_or_region
+          postal_code: postal_code
+          country: country
+
+  - name: Producer
+    key: producer_id
+    display: producer_name
+    properties:
+      - { name: producer_id, type: string }
+      - { name: producer_name, type: string }
+      - { name: producer_type, type: string }    # agent, broker, mga
+      - { name: agency_id, type: string }
+      - { name: license_number, type: string }
+      - { name: appointed_on, type: datetime }
+      - { name: state_or_region, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: producers
+          schema: dbo
+        propertyBindings:
+          producer_id: producer_id
+          producer_name: producer_name
+          producer_type: producer_type
+          agency_id: agency_id
+          license_number: license_number
+          appointed_on: appointed_on
+          state_or_region: state_or_region
+
+  - name: Policy
+    key: policy_id
+    display: policy_number
+    properties:
+      - { name: policy_id, type: string }
+      - { name: policy_number, type: string }
+      - { name: policyholder_id, type: string }
+      - { name: producer_id, type: string }
+      - { name: line_of_business, type: string }    # auto, home, commercial_property, gl
+      - { name: product_code, type: string }
+      - { name: effective_date, type: datetime }
+      - { name: expiration_date, type: datetime }
+      - { name: status, type: string }              # quoted, bound, in_force, cancelled, lapsed
+      - { name: written_premium, type: double }
+      - { name: earned_premium, type: double }
+      - { name: currency, type: string }
+      - { name: renewal_of_policy_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: policies
+          schema: dbo
+        propertyBindings:
+          policy_id: policy_id
+          policy_number: policy_number
+          policyholder_id: policyholder_id
+          producer_id: producer_id
+          line_of_business: line_of_business
+          product_code: product_code
+          effective_date: effective_date
+          expiration_date: expiration_date
+          status: status
+          written_premium: written_premium
+          earned_premium: earned_premium
+          currency: currency
+          renewal_of_policy_id: renewal_of_policy_id
+
+  - name: Coverage
+    key: coverage_id
+    display: coverage_code
+    properties:
+      - { name: coverage_id, type: string }
+      - { name: policy_id, type: string }
+      - { name: risk_object_id, type: string }
+      - { name: coverage_code, type: string }       # COLL, COMP, BI, PD, DWELL
+      - { name: coverage_name, type: string }
+      - { name: limit_amount, type: double }
+      - { name: deductible_amount, type: double }
+      - { name: premium, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: coverages
+          schema: dbo
+        propertyBindings:
+          coverage_id: coverage_id
+          policy_id: policy_id
+          risk_object_id: risk_object_id
+          coverage_code: coverage_code
+          coverage_name: coverage_name
+          limit_amount: limit_amount
+          deductible_amount: deductible_amount
+          premium: premium
+
+  - name: RiskObject
+    key: risk_object_id
+    display: display_name
+    properties:
+      - { name: risk_object_id, type: string }
+      - { name: display_name, type: string }
+      - { name: risk_object_type, type: string }   # vehicle, property, equipment
+      - { name: vin, type: string }
+      - { name: make, type: string }
+      - { name: model, type: string }
+      - { name: year, type: bigint }
+      - { name: property_address, type: string }
+      - { name: construction_type, type: string }
+      - { name: year_built, type: bigint }
+      - { name: replacement_cost, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: risk_objects
+          schema: dbo
+        propertyBindings:
+          risk_object_id: risk_object_id
+          display_name: display_name
+          risk_object_type: risk_object_type
+          vin: vin
+          make: make
+          model: model
+          year: year
+          property_address: property_address
+          construction_type: construction_type
+          year_built: year_built
+          replacement_cost: replacement_cost
+
+  - name: Claim
+    key: claim_id
+    display: claim_number
+    properties:
+      - { name: claim_id, type: string }
+      - { name: claim_number, type: string }
+      - { name: policy_id, type: string }
+      - { name: claimant_id, type: string }
+      - { name: adjuster_id, type: string }
+      - { name: loss_date, type: datetime }
+      - { name: reported_date, type: datetime }
+      - { name: closed_date, type: datetime }
+      - { name: status, type: string }              # open, in_review, paid, denied, closed
+      - { name: cause_of_loss, type: string }
+      - { name: severity, type: string }            # minor, moderate, major, total_loss
+      - { name: loss_location, type: string }
+      - { name: total_incurred, type: double }
+      - { name: total_paid, type: double }
+      - { name: reserve_amount, type: double }
+      - { name: fraud_score, type: double }
+      - { name: subrogation_amount, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+          schema: dbo
+        propertyBindings:
+          claim_id: claim_id
+          claim_number: claim_number
+          policy_id: policy_id
+          claimant_id: claimant_id
+          adjuster_id: adjuster_id
+          loss_date: loss_date
+          reported_date: reported_date
+          closed_date: closed_date
+          status: status
+          cause_of_loss: cause_of_loss
+          severity: severity
+          loss_location: loss_location
+          total_incurred: total_incurred
+          total_paid: total_paid
+          reserve_amount: reserve_amount
+          fraud_score: fraud_score
+          subrogation_amount: subrogation_amount
+
+  - name: ClaimFeature
+    key: claim_feature_id
+    display: feature_type
+    properties:
+      - { name: claim_feature_id, type: string }
+      - { name: claim_id, type: string }
+      - { name: coverage_id, type: string }
+      - { name: feature_type, type: string }        # bodily_injury, property_damage, medical
+      - { name: status, type: string }
+      - { name: incurred_amount, type: double }
+      - { name: paid_amount, type: double }
+      - { name: reserve_amount, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_features
+          schema: dbo
+        propertyBindings:
+          claim_feature_id: claim_feature_id
+          claim_id: claim_id
+          coverage_id: coverage_id
+          feature_type: feature_type
+          status: status
+          incurred_amount: incurred_amount
+          paid_amount: paid_amount
+          reserve_amount: reserve_amount
+
+  - name: ClaimPayment
+    key: payment_id
+    display: payment_reference
+    properties:
+      - { name: payment_id, type: string }
+      - { name: payment_reference, type: string }
+      - { name: claim_id, type: string }
+      - { name: claim_feature_id, type: string }
+      - { name: payee_party_id, type: string }
+      - { name: payment_date, type: datetime }
+      - { name: amount, type: double }
+      - { name: currency, type: string }
+      - { name: payment_type, type: string }       # indemnity, expense, recovery
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_payments
+          schema: dbo
+        propertyBindings:
+          payment_id: payment_id
+          payment_reference: payment_reference
+          claim_id: claim_id
+          claim_feature_id: claim_feature_id
+          payee_party_id: payee_party_id
+          payment_date: payment_date
+          amount: amount
+          currency: currency
+          payment_type: payment_type
+
+  - name: Adjuster
+    key: adjuster_id
+    display: adjuster_name
+    properties:
+      - { name: adjuster_id, type: string }
+      - { name: adjuster_name, type: string }
+      - { name: adjuster_type, type: string }      # staff, independent
+      - { name: specialty, type: string }
+      - { name: region, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: adjusters
+          schema: dbo
+        propertyBindings:
+          adjuster_id: adjuster_id
+          adjuster_name: adjuster_name
+          adjuster_type: adjuster_type
+          specialty: specialty
+          region: region
+
+relationships:
+  - name: PolicyHeldByParty
+    source_entity: Policy
+    target_entity: Party
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: policies
+        sourceColumn: policy_id
+        targetColumn: policyholder_id
+
+  - name: PolicySoldByProducer
+    source_entity: Policy
+    target_entity: Producer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: policies
+        sourceColumn: policy_id
+        targetColumn: producer_id
+
+  - name: CoverageOnPolicy
+    source_entity: Coverage
+    target_entity: Policy
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: coverages
+        sourceColumn: coverage_id
+        targetColumn: policy_id
+
+  - name: CoverageOnRiskObject
+    source_entity: Coverage
+    target_entity: RiskObject
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: coverages
+        sourceColumn: coverage_id
+        targetColumn: risk_object_id
+
+  - name: ClaimOnPolicy
+    source_entity: Claim
+    target_entity: Policy
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: policy_id
+
+  - name: ClaimantParty
+    source_entity: Claim
+    target_entity: Party
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: claimant_id
+
+  - name: ClaimAssignedToAdjuster
+    source_entity: Claim
+    target_entity: Adjuster
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: adjuster_id
+
+  - name: FeatureOnClaim
+    source_entity: ClaimFeature
+    target_entity: Claim
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_features
+        sourceColumn: claim_feature_id
+        targetColumn: claim_id
+
+  - name: FeatureUnderCoverage
+    source_entity: ClaimFeature
+    target_entity: Coverage
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_features
+        sourceColumn: claim_feature_id
+        targetColumn: coverage_id
+
+  - name: PaymentOnClaim
+    source_entity: ClaimPayment
+    target_entity: Claim
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_payments
+        sourceColumn: payment_id
+        targetColumn: claim_id
+
+  - name: PaymentToParty
+    source_entity: ClaimPayment
+    target_entity: Party
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claim_payments
+        sourceColumn: payment_id
+        targetColumn: payee_party_id

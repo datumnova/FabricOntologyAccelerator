@@ -1,0 +1,6 @@
+patient_id,mrn,full_name,birth_date,gender,race,ethnicity,language,marital_status,deceased,deceased_date,address_line1,city,state_or_region,postal_code,country,primary_practitioner_id,primary_organization_id
+PT0001,MRN-1001,Alice Martin,1985-03-12,female,white,non_hispanic,fr,married,false,,12 rue de Rivoli,Paris,Ile-de-France,75001,FR,PRA001,ORG001
+PT0002,MRN-1002,Bruno Dupont,1978-11-04,male,white,non_hispanic,fr,married,false,,45 avenue Foch,Paris,Ile-de-France,75116,FR,PRA001,ORG001
+PT0003,MRN-1003,Chiara Rossi,1992-07-30,female,white,non_hispanic,it,single,false,,Via Dante 8,Milano,Lombardia,20121,IT,PRA002,ORG002
+PT0004,MRN-1004,David Schmidt,1955-01-19,male,white,non_hispanic,de,married,false,,Friedrichstr 110,Berlin,Berlin,10117,DE,PRA003,ORG003
+PT0005,MRN-1005,Eva Larsen,1990-05-22,female,white,non_hispanic,no,single,false,,Karl Johans gate 5,Oslo,Oslo,0154,NO,PRA003,ORG003

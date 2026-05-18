@@ -1,0 +1,6 @@
+medication_request_id,patient_id,encounter_id,practitioner_id,medication_code_system,medication_code,medication_display,dosage,route,status,intent,authored_on
+MR001,PT0002,ENC002,PRA001,RxNorm,316672,Lisinopril 10 mg,1 tab daily,oral,active,order,2026-04-15
+MR002,PT0004,ENC003,PRA003,RxNorm,197361,Atorvastatin 40 mg,1 tab nightly,oral,active,order,2026-03-04
+MR003,PT0004,ENC003,PRA003,RxNorm,209459,Clopidogrel 75 mg,1 tab daily,oral,active,order,2026-03-04
+MR004,PT0004,ENC003,PRA003,RxNorm,860975,Metformin 1000 mg,1 tab BID,oral,active,order,2026-03-04
+MR005,PT0005,ENC006,PRA003,RxNorm,313988,Ibuprofen 400 mg,1 tab Q6H prn,oral,active,order,2026-05-10

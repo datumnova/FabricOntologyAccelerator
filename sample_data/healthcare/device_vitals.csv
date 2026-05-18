@@ -1,0 +1,8 @@
+device_id,observed_at,heart_rate_bpm,systolic_mmhg,diastolic_mmhg,spo2_percent,respiration_rate_bpm,body_temperature_c,blood_glucose_mgdl,ecg_alert,battery_percent
+DEV001,2026-05-15T07:30:00Z,72.0,128.0,82.0,,,,,,82.0
+DEV002,2026-05-15T07:45:00Z,78.0,152.0,94.0,,,,,,76.0
+DEV003,2026-05-15T08:00:00Z,84.0,148.0,90.0,95.0,18.0,37.1,,false,68.0
+DEV003,2026-05-16T08:00:00Z,88.0,162.0,98.0,93.0,22.0,37.4,,false,65.0
+DEV004,2026-05-16T08:05:00Z,,,,,,,184.0,,72.0
+DEV004,2026-05-16T13:05:00Z,,,,,,,232.0,,72.0
+DEV005,2026-05-16T19:20:00Z,128.0,,,,,,,true,55.0

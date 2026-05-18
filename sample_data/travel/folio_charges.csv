@@ -1,0 +1,10 @@
+charge_id,folio_id,posted_at,charge_category,description,quantity,unit_amount,amount,currency
+CHG001,FOL001,2026-05-15T15:01:00Z,room,Deluxe Room - Night 1,1,420.00,420.00,EUR
+CHG002,FOL001,2026-05-16T03:00:00Z,room,Deluxe Room - Night 2,1,420.00,420.00,EUR
+CHG003,FOL001,2026-05-16T20:30:00Z,fb,In-room dinner,1,120.00,120.00,EUR
+CHG004,FOL002,2026-04-02T20:00:00Z,fb,Restaurant dinner,2,60.00,120.00,EUR
+CHG005,FOL002,2026-04-03T19:30:00Z,spa,Couples massage,1,180.00,180.00,EUR
+CHG006,FOL003,2026-05-08T20:15:00Z,fb,Bar drinks,3,12.00,36.00,EUR
+CHG007,FOL004,2026-05-15T03:00:00Z,room,Deluxe Room - Night 1,1,260.00,260.00,EUR
+CHG008,FOL005,2026-05-17T03:00:00Z,room,Executive Room - Night 1,1,340.00,340.00,EUR
+CHG009,FOL005,2026-05-17T18:00:00Z,fb,Half-board dinner,2,55.00,110.00,EUR

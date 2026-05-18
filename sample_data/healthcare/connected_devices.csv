@@ -1,0 +1,6 @@
+device_id,display_name,patient_id,device_type,manufacturer,model,serial_number,status,assigned_on
+DEV001,Alice - BP cuff,PT0001,bp_cuff,Omron,M7-Intelli,OMR-001,active,2025-11-12
+DEV002,Bruno - BP cuff,PT0002,bp_cuff,Omron,M7-Intelli,OMR-002,active,2026-04-15
+DEV003,David - multi vital,PT0004,multi_vital,Philips,BX100,PHL-003,active,2026-03-06
+DEV004,David - glucose,PT0004,glucose,Dexcom,G7,DXM-004,active,2026-03-06
+DEV005,Chiara - ECG,PT0003,ecg,AliveCor,KardiaMobile6L,ALV-005,active,2026-05-05

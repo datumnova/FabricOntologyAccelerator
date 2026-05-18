@@ -1,0 +1,8 @@
+claim_feature_id,claim_id,coverage_id,feature_type,status,incurred_amount,paid_amount,reserve_amount
+CF001,CLM001,COV001,property_damage,closed,3200.00,2700.00,0.00
+CF002,CLM002,COV003,bodily_injury,open,10000.00,2500.00,7500.00
+CF003,CLM002,COV004,property_damage,open,8500.00,2500.00,6000.00
+CF004,CLM003,COV005,property_damage,open,30000.00,8000.00,22000.00
+CF005,CLM003,COV006,property_damage,open,12000.00,4000.00,8000.00
+CF006,CLM004,COV010,property_damage,open,18000.00,0.00,18000.00
+CF007,CLM005,COV012,property_damage,open,26000.00,4000.00,22000.00

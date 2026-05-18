@@ -1,0 +1,6 @@
+condition_id,patient_id,encounter_id,code_system,code,code_display,clinical_status,verification_status,severity,onset_date,recorded_date
+COND001,PT0002,ENC002,ICD-10,I10,Essential hypertension,active,confirmed,moderate,2024-01-15,2026-04-15
+COND002,PT0004,ENC003,ICD-10,I21.4,Acute subendocardial myocardial infarction,active,confirmed,severe,2026-03-02,2026-03-02
+COND003,PT0004,ENC003,ICD-10,E11.9,Type 2 diabetes mellitus,active,confirmed,moderate,2018-06-10,2026-03-02
+COND004,PT0003,ENC005,ICD-10,R07.9,Chest pain unspecified,active,confirmed,mild,2026-05-05,2026-05-05
+COND005,PT0005,ENC006,ICD-10,S52.5,Fracture of lower end of radius,active,confirmed,moderate,2026-05-10,2026-05-10

@@ -1,0 +1,6 @@
+party_id,display_name,party_type,date_of_birth,gender,email,phone,address_line1,city,state_or_region,postal_code,country
+P0001,Alice Martin,person,1985-03-12,F,alice.martin@example.com,+33-1-23-45-67-01,12 rue de Rivoli,Paris,Ile-de-France,75001,FR
+P0002,Bruno Dupont,person,1978-11-04,M,bruno.dupont@example.com,+33-1-23-45-67-02,45 avenue Foch,Paris,Ile-de-France,75116,FR
+P0003,Chiara Rossi,person,1992-07-30,F,chiara.rossi@example.com,+39-02-1234-5602,Via Dante 8,Milano,Lombardia,20121,IT
+P0004,Acme Logistics SAS,organization,,,,+33-1-99-99-99-99,200 zone industrielle,Lyon,Auvergne-Rhone-Alpes,69007,FR
+P0005,Body Shop Roma,organization,,,,+39-06-9876-5432,Via Appia 100,Roma,Lazio,00179,IT

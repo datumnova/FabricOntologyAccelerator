@@ -1,0 +1,6 @@
+risk_object_id,display_name,risk_object_type,vin,make,model,year,property_address,construction_type,year_built,replacement_cost
+RO001,Renault Megane 2022 - Alice,vehicle,VF1RFB00X12345001,Renault,Megane,2022,,,,28000.00
+RO002,Apartment 12 rue de Rivoli,property,,,,,12 rue de Rivoli 75001 Paris,masonry,1890,420000.00
+RO003,BMW 320d 2021 - Bruno,vehicle,WBA8E1C50JK000123,BMW,320d,2021,,,,32000.00
+RO004,Fiat 500 2023 - Chiara,vehicle,ZFA31200000000456,Fiat,500,2023,,,,18000.00
+RO005,Renault Master Van 2024 - Acme,vehicle,VF1MA000000000789,Renault,Master,2024,,,,45000.00

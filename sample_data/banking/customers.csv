@@ -1,0 +1,6 @@
+customer_id,full_name,date_of_birth,gender,email,phone,residency_country,tax_id,kyc_status,customer_segment,lifecycle_status,onboarded_on,household_id,primary_branch_id
+C0001,Alice Martin,1985-03-12,F,alice.martin@example.com,+33-1-23-45-67-01,FR,FR-TAX-001,verified,affluent,active,2018-06-15,H001,B001
+C0002,Bruno Dupont,1978-11-04,M,bruno.dupont@example.com,+33-1-23-45-67-02,FR,FR-TAX-002,verified,mass,active,2016-02-22,H001,B001
+C0003,Chiara Rossi,1992-07-30,F,chiara.rossi@example.com,+39-02-1234-5602,IT,IT-TAX-003,verified,mass,active,2020-09-01,H002,B002
+C0004,David Schmidt,1965-01-19,M,david.schmidt@example.com,+49-30-1234-5604,DE,DE-TAX-004,verified,private,active,2010-04-10,H003,B003
+C0005,Eva Larsen,1990-05-22,F,eva.larsen@example.com,+47-22-12-34-05,NO,NO-TAX-005,pending,mass,prospect,2025-12-01,H004,B003

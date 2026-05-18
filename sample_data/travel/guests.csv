@@ -1,0 +1,6 @@
+guest_id,full_name,email,phone,birth_date,nationality,preferred_language,vip_status,marketing_optin,loyalty_account_id
+G0001,Alice Martin,alice.martin@example.com,+33-1-23-45-67-01,1985-03-12,FR,fr,gold,true,LOY001
+G0002,Bruno Dupont,bruno.dupont@example.com,+33-1-23-45-67-02,1978-11-04,FR,fr,silver,true,LOY002
+G0003,Chiara Rossi,chiara.rossi@example.com,+39-02-1234-5602,1992-07-30,IT,it,none,false,
+G0004,David Schmidt,david.schmidt@example.com,+49-30-1234-5604,1965-01-19,DE,en,platinum,true,LOY003
+G0005,Eva Larsen,eva.larsen@example.com,+47-22-12-34-05,1990-05-22,NO,en,gold,true,LOY004

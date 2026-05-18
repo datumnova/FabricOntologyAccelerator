@@ -1,0 +1,6 @@
+interaction_id,customer_id,occurred_at,channel,interaction_type,subject,sentiment,resolved,agent_id
+I0001,C0001,2026-04-02T10:15:00Z,mobile,service,Lost card replacement,neutral,true,AG-101
+I0002,C0002,2026-04-18T15:30:00Z,contact-center,complaint,Disputed transaction,negative,true,AG-102
+I0003,C0003,2026-05-01T11:00:00Z,branch,sales,Mortgage simulation,positive,true,AG-103
+I0004,C0004,2026-05-09T09:45:00Z,advisor,advice,Portfolio rebalancing,positive,true,AG-201
+I0005,C0001,2026-05-16T20:10:00Z,chatbot,service,Travel notification,positive,true,

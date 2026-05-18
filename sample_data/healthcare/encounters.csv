@@ -1,0 +1,7 @@
+encounter_id,encounter_reference,patient_id,practitioner_id,organization_id,encounter_class,encounter_type,status,start_time,end_time,admission_source,discharge_disposition,reason_code,length_of_stay_hours
+ENC001,ENC-2026-0001,PT0001,PRA001,ORG001,ambulatory,office_visit,finished,2026-04-12T09:00:00Z,2026-04-12T09:30:00Z,outpatient,home,Z00.00,0.5
+ENC002,ENC-2026-0002,PT0002,PRA001,ORG001,ambulatory,office_visit,finished,2026-04-15T10:00:00Z,2026-04-15T10:25:00Z,outpatient,home,I10,0.4
+ENC003,ENC-2026-0003,PT0004,PRA003,ORG003,inpatient,admission,finished,2026-03-02T22:14:00Z,2026-03-06T11:30:00Z,emergency,home,I21.4,85.0
+ENC004,ENC-2026-0004,PT0004,PRA003,ORG003,ambulatory,follow_up,finished,2026-04-10T10:00:00Z,2026-04-10T10:20:00Z,outpatient,home,Z09,0.3
+ENC005,ENC-2026-0005,PT0003,PRA002,ORG002,ambulatory,specialist,finished,2026-05-05T15:00:00Z,2026-05-05T15:45:00Z,outpatient,home,R07.9,0.75
+ENC006,ENC-2026-0006,PT0005,PRA003,ORG003,emergency,emergency,finished,2026-05-10T20:00:00Z,2026-05-10T23:30:00Z,emergency,home,S52.5,3.5

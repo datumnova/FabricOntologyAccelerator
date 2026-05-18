@@ -1,0 +1,5 @@
+loyalty_account_id,membership_number,tier,points_balance,lifetime_points,enrolled_on,status
+LOY001,LY-100001,gold,42500,180000,2019-07-01,active
+LOY002,LY-100002,silver,15800,52000,2021-03-12,active
+LOY003,LY-100003,platinum,180400,950000,2010-04-22,active
+LOY004,LY-100004,gold,38200,210000,2017-11-30,active

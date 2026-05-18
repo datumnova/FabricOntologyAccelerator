@@ -1,0 +1,7 @@
+channel_id,channel_name,channel_type,commission_pct
+CH001,Brand.com,direct_web,0.0
+CH002,Call Center,direct_call,0.0
+CH003,Booking.com,ota,15.0
+CH004,Expedia,ota,18.0
+CH005,Amadeus GDS,gds,8.0
+CH006,Corporate Portal,corporate,0.0

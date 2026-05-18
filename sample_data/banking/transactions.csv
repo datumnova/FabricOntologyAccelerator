@@ -1,0 +1,8 @@
+transaction_id,transaction_reference,account_id,card_id,posted_at,value_date,amount,currency,direction,channel,merchant_id,merchant_category_code,country_code,description
+T0001,TX-2026-0001,A0001,CRD001,2026-05-12T08:14:00Z,2026-05-12,-58.40,EUR,debit,pos,M001,5411,FR,Carrefour Paris groceries
+T0002,TX-2026-0002,A0001,CRD002,2026-05-13T19:02:00Z,2026-05-13,-410.00,EUR,debit,online,M003,5942,LU,Amazon EU order
+T0003,TX-2026-0003,A0003,CRD003,2026-05-14T07:55:00Z,2026-05-14,-72.50,EUR,debit,pos,M002,5541,FR,Total fuel
+T0004,TX-2026-0004,A0005,CRD004,2026-05-15T14:30:00Z,2026-05-15,-1280.00,EUR,debit,online,M004,4511,DE,Lufthansa MUC-JFK
+T0005,TX-2026-0005,A0001,,2026-05-16T09:00:00Z,2026-05-16,3200.00,EUR,credit,online,,,FR,Monthly salary
+T0006,TX-2026-0006,A0005,CRD004,2026-05-16T22:45:00Z,2026-05-16,-540.00,EUR,debit,pos,M005,7011,FR,Marriott Paris stay
+T0007,TX-2026-0007,A0003,CRD003,2026-05-17T03:10:00Z,2026-05-17,-900.00,EUR,debit,online,M006,5999,RU,Suspicious online purchase

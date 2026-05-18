@@ -1,0 +1,4 @@
+allergy_id,patient_id,substance_code,substance_display,category,criticality,clinical_status,recorded_date
+ALG001,PT0001,7980,Penicillin,medication,high,active,2010-05-20
+ALG002,PT0003,227037,Peanut,food,high,active,2015-08-01
+ALG003,PT0004,2670,Codeine,medication,low,active,2020-02-14
