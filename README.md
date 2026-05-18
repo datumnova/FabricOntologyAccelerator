@@ -76,18 +76,19 @@ uv run fabric-ontology --excel sample_data/example.ontology.xlsx \
 
 ### Excel sheet layout
 
+The workbook contains three sheets: **Ontology** (metadata), **Entities** (one row per property), and **Relationships**.
+
+**Ontology** sheet:
+
+![Ontology sheet](docs/images/excel-ontology-sheet.png)
+
 **Entities** sheet:
 
-| entity   | property    | type   | key | display | table     | schema |
-|----------|-------------|--------|-----|---------|-----------|--------|
-| Customer | customer_id | string | yes |         | customers | dbo    |
-| Customer | name        | string |     | yes     | customers | dbo    |
+![Entities sheet](docs/images/excel-entities-sheet.png)
 
 **Relationships** sheet:
 
-| name                   | source_entity | target_entity | table  | source_column | target_column |
-|------------------------|---------------|---------------|--------|---------------|---------------|
-| OrderBelongsToCustomer | Order         | Customer      | orders | order_id      | customer_id   |
+![Relationships sheet](docs/images/excel-relationships-sheet.png)
 
 ## Generate from a Fabric semantic model
 
