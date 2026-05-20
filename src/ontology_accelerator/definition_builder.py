@@ -279,6 +279,17 @@ def build_definition(cfg, workspace_id=None, lakehouse_id=None, seed=42, lakehou
                     f"Relationship binding for '{rel['name']}' requires sourceColumn and targetColumn"
                 )
 
+            if (src_entity, source_key_property) not in property_ids:
+                raise ValueError(
+                    f"Relationship '{rel['name']}' binding references unknown source property "
+                    f"'{source_key_property}' on entity '{src_entity}'"
+                )
+            if (tgt_entity, target_key_property) not in property_ids:
+                raise ValueError(
+                    f"Relationship '{rel['name']}' binding references unknown target property "
+                    f"'{target_key_property}' on entity '{tgt_entity}'"
+                )
+
             source = ctx.get("source", {})
             contextualization = {
                 "id": ctx_id,

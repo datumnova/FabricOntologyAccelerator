@@ -35,7 +35,12 @@ class FabricLakehouseResolver:
                     f"Failed to list lakehouses for workspace '{workspace_id}': {resp.status_code} {resp.text}"
                 )
 
-            body = resp.json() if resp.text.strip() else {}
+            try:
+                body = resp.json() if resp.text.strip() else {}
+            except ValueError:
+                raise RuntimeError(
+                    f"Invalid JSON response while listing lakehouses: {resp.text[:200]}"
+                )
             page_items = body.get("value") or []
             if not isinstance(page_items, list):
                 raise RuntimeError("Unexpected response while listing lakehouses; expected a list in 'value'")
@@ -85,7 +90,12 @@ def poll_operation(url, token, timeout=600):
         if resp.status_code >= 400:
             raise RuntimeError(f"Operation polling failed: {resp.status_code} {resp.text}")
 
-        data = resp.json() if resp.text.strip() else {}
+        try:
+            data = resp.json() if resp.text.strip() else {}
+        except ValueError:
+            raise RuntimeError(
+                f"Invalid JSON in operation poll response: {resp.text[:200]}"
+            )
         status = (data.get("status") or data.get("state") or "").lower()
         if status in {"succeeded", "success", "completed"}:
             return data
@@ -95,7 +105,10 @@ def poll_operation(url, token, timeout=600):
         if time.time() - start > timeout:
             raise TimeoutError("Timed out while waiting for Fabric long-running operation")
 
-        retry_after = int(resp.headers.get("Retry-After", 5))
+        try:
+            retry_after = int(resp.headers.get("Retry-After", 5))
+        except ValueError:
+            retry_after = 5
         time.sleep(retry_after)
 
 
@@ -119,10 +132,14 @@ def create_or_update(args, payload):
     if resp.status_code not in (200, 201, 202):
         raise RuntimeError(f"Fabric API error {resp.status_code}: {resp.text}")
 
+    try:
+        response_body = resp.json() if resp.text.strip() else {}
+    except ValueError:
+        response_body = {}
     result = {
         "status_code": resp.status_code,
         "headers": dict(resp.headers),
-        "body": resp.json() if resp.text.strip() else {},
+        "body": response_body,
     }
     location = resp.headers.get("Location")
     if args.wait and location:
