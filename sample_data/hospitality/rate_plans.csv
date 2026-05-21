@@ -1,0 +1,7 @@
+rate_plan_id,property_id,rate_plan_code,rate_plan_name,rate_category,cancellation_policy,meal_plan,currency
+RP001,PROP001,BAR,Best Available Rate,bar,flexible_24h,bb,EUR
+RP002,PROP001,NR,Non-Refundable Saver,promo,non_refundable,rooms_only,EUR
+RP003,PROP002,BAR,Best Available Rate,bar,flexible_24h,bb,EUR
+RP004,PROP002,CORP,Corporate Negotiated,corporate,flexible_48h,bb,EUR
+RP005,PROP003,BAR,Best Available Rate,bar,flexible_24h,bb,EUR
+RP006,PROP003,PKG,Romance Package,package,flexible_48h,hb,EUR

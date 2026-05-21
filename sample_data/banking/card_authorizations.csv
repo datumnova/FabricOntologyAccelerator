@@ -1,0 +1,9 @@
+card_id,authorized_at,amount,currency,merchant_id,merchant_category_code,country_code,decision,decline_reason,risk_score,is_card_present
+CRD001,2026-05-12T08:14:01Z,58.40,EUR,M001,5411,FR,approved,,0.05,true
+CRD001,2026-05-13T12:22:01Z,4.50,EUR,M001,5411,FR,approved,,0.04,true
+CRD002,2026-05-13T19:02:03Z,410.00,EUR,M003,5942,LU,approved,,0.18,false
+CRD003,2026-05-14T07:55:01Z,72.50,EUR,M002,5541,FR,approved,,0.06,true
+CRD004,2026-05-15T14:30:02Z,1280.00,EUR,M004,4511,DE,approved,,0.12,false
+CRD004,2026-05-16T22:45:01Z,540.00,EUR,M005,7011,FR,approved,,0.08,true
+CRD003,2026-05-17T03:10:02Z,900.00,EUR,M006,5999,RU,declined,suspected_fraud,0.91,false
+CRD003,2026-05-17T03:11:00Z,1200.00,EUR,M006,5999,RU,declined,velocity_limit,0.95,false

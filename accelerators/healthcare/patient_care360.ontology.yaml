@@ -1,0 +1,465 @@
+# Healthcare - Patient 360 Accelerator
+# Aligned to HL7 FHIR R4 core resources:
+#   Patient, Practitioner, Organization, Encounter, Condition, Procedure,
+#   MedicationRequest, AllergyIntolerance, Observation, DiagnosticReport.
+# Names and key properties intentionally mirror FHIR resource fields so that
+# customers can map their existing FHIR data with minimal effort.
+#
+# Business value:
+#   - Single longitudinal patient view across encounters, conditions, meds
+#   - Care gaps, readmission risk, population health stratification
+#   - Copilot "summarize this patient" for clinicians
+#   - Foundation for value-based care and quality reporting (HEDIS, CMS)
+
+ontology:
+  displayName: PatientCare360
+  description: Patient 360 ontology aligned to HL7 FHIR R4
+  namespace: healthcare
+  version: "1.0"
+
+entities:
+  - name: Patient
+    key: patient_id
+    display: full_name
+    properties:
+      - { name: patient_id, type: string }
+      - { name: mrn, type: string }                # medical record number
+      - { name: full_name, type: string }
+      - { name: birth_date, type: datetime }
+      - { name: gender, type: string }
+      - { name: race, type: string }
+      - { name: ethnicity, type: string }
+      - { name: language, type: string }
+      - { name: marital_status, type: string }
+      - { name: deceased, type: boolean }
+      - { name: deceased_date, type: datetime }
+      - { name: address_line1, type: string }
+      - { name: city, type: string }
+      - { name: state_or_region, type: string }
+      - { name: postal_code, type: string }
+      - { name: country, type: string }
+      - { name: primary_practitioner_id, type: string }
+      - { name: primary_organization_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: patients
+          schema: dbo
+        propertyBindings:
+          patient_id: patient_id
+          mrn: mrn
+          full_name: full_name
+          birth_date: birth_date
+          gender: gender
+          race: race
+          ethnicity: ethnicity
+          language: language
+          marital_status: marital_status
+          deceased: deceased
+          deceased_date: deceased_date
+          address_line1: address_line1
+          city: city
+          state_or_region: state_or_region
+          postal_code: postal_code
+          country: country
+          primary_practitioner_id: primary_practitioner_id
+          primary_organization_id: primary_organization_id
+
+  - name: Practitioner
+    key: practitioner_id
+    display: full_name
+    properties:
+      - { name: practitioner_id, type: string }
+      - { name: npi, type: string }
+      - { name: full_name, type: string }
+      - { name: specialty, type: string }
+      - { name: qualification, type: string }
+      - { name: organization_id, type: string }
+      - { name: active, type: boolean }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: practitioners
+          schema: dbo
+        propertyBindings:
+          practitioner_id: practitioner_id
+          npi: npi
+          full_name: full_name
+          specialty: specialty
+          qualification: qualification
+          organization_id: organization_id
+          active: active
+
+  - name: Organization
+    key: organization_id
+    display: name
+    properties:
+      - { name: organization_id, type: string }
+      - { name: name, type: string }
+      - { name: organization_type, type: string }   # hospital, clinic, payer, lab
+      - { name: city, type: string }
+      - { name: state_or_region, type: string }
+      - { name: country, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: organizations
+          schema: dbo
+        propertyBindings:
+          organization_id: organization_id
+          name: name
+          organization_type: organization_type
+          city: city
+          state_or_region: state_or_region
+          country: country
+
+  - name: Encounter
+    key: encounter_id
+    display: encounter_reference
+    properties:
+      - { name: encounter_id, type: string }
+      - { name: encounter_reference, type: string }
+      - { name: patient_id, type: string }
+      - { name: practitioner_id, type: string }
+      - { name: organization_id, type: string }
+      - { name: encounter_class, type: string }     # ambulatory, inpatient, emergency, virtual
+      - { name: encounter_type, type: string }
+      - { name: status, type: string }              # planned, in-progress, finished, cancelled
+      - { name: start_time, type: datetime }
+      - { name: end_time, type: datetime }
+      - { name: admission_source, type: string }
+      - { name: discharge_disposition, type: string }
+      - { name: reason_code, type: string }
+      - { name: length_of_stay_hours, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+          schema: dbo
+        propertyBindings:
+          encounter_id: encounter_id
+          encounter_reference: encounter_reference
+          patient_id: patient_id
+          practitioner_id: practitioner_id
+          organization_id: organization_id
+          encounter_class: encounter_class
+          encounter_type: encounter_type
+          status: status
+          start_time: start_time
+          end_time: end_time
+          admission_source: admission_source
+          discharge_disposition: discharge_disposition
+          reason_code: reason_code
+          length_of_stay_hours: length_of_stay_hours
+
+  - name: Condition
+    key: condition_id
+    display: code_display
+    properties:
+      - { name: condition_id, type: string }
+      - { name: patient_id, type: string }
+      - { name: encounter_id, type: string }
+      - { name: code_system, type: string }         # ICD-10, SNOMED
+      - { name: code, type: string }
+      - { name: code_display, type: string }
+      - { name: clinical_status, type: string }     # active, resolved, recurrence
+      - { name: verification_status, type: string }
+      - { name: severity, type: string }
+      - { name: onset_date, type: datetime }
+      - { name: recorded_date, type: datetime }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: conditions
+          schema: dbo
+        propertyBindings:
+          condition_id: condition_id
+          patient_id: patient_id
+          encounter_id: encounter_id
+          code_system: code_system
+          code: code
+          code_display: code_display
+          clinical_status: clinical_status
+          verification_status: verification_status
+          severity: severity
+          onset_date: onset_date
+          recorded_date: recorded_date
+
+  - name: Procedure
+    key: procedure_id
+    display: code_display
+    properties:
+      - { name: procedure_id, type: string }
+      - { name: patient_id, type: string }
+      - { name: encounter_id, type: string }
+      - { name: practitioner_id, type: string }
+      - { name: code_system, type: string }         # CPT, HCPCS, SNOMED
+      - { name: code, type: string }
+      - { name: code_display, type: string }
+      - { name: status, type: string }
+      - { name: performed_at, type: datetime }
+      - { name: outcome, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: procedures
+          schema: dbo
+        propertyBindings:
+          procedure_id: procedure_id
+          patient_id: patient_id
+          encounter_id: encounter_id
+          practitioner_id: practitioner_id
+          code_system: code_system
+          code: code
+          code_display: code_display
+          status: status
+          performed_at: performed_at
+          outcome: outcome
+
+  - name: MedicationRequest
+    key: medication_request_id
+    display: medication_display
+    properties:
+      - { name: medication_request_id, type: string }
+      - { name: patient_id, type: string }
+      - { name: encounter_id, type: string }
+      - { name: practitioner_id, type: string }
+      - { name: medication_code_system, type: string }   # RxNorm, ATC
+      - { name: medication_code, type: string }
+      - { name: medication_display, type: string }
+      - { name: dosage, type: string }
+      - { name: route, type: string }
+      - { name: status, type: string }                   # active, completed, stopped
+      - { name: intent, type: string }                   # order, plan
+      - { name: authored_on, type: datetime }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: medication_requests
+          schema: dbo
+        propertyBindings:
+          medication_request_id: medication_request_id
+          patient_id: patient_id
+          encounter_id: encounter_id
+          practitioner_id: practitioner_id
+          medication_code_system: medication_code_system
+          medication_code: medication_code
+          medication_display: medication_display
+          dosage: dosage
+          route: route
+          status: status
+          intent: intent
+          authored_on: authored_on
+
+  - name: AllergyIntolerance
+    key: allergy_id
+    display: substance_display
+    properties:
+      - { name: allergy_id, type: string }
+      - { name: patient_id, type: string }
+      - { name: substance_code, type: string }
+      - { name: substance_display, type: string }
+      - { name: category, type: string }            # food, medication, environment
+      - { name: criticality, type: string }
+      - { name: clinical_status, type: string }
+      - { name: recorded_date, type: datetime }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: allergies
+          schema: dbo
+        propertyBindings:
+          allergy_id: allergy_id
+          patient_id: patient_id
+          substance_code: substance_code
+          substance_display: substance_display
+          category: category
+          criticality: criticality
+          clinical_status: clinical_status
+          recorded_date: recorded_date
+
+  - name: Observation
+    key: observation_id
+    display: code_display
+    properties:
+      - { name: observation_id, type: string }
+      - { name: patient_id, type: string }
+      - { name: encounter_id, type: string }
+      - { name: code_system, type: string }         # LOINC, SNOMED
+      - { name: code, type: string }
+      - { name: code_display, type: string }
+      - { name: category, type: string }            # vital-signs, laboratory
+      - { name: effective_time, type: datetime }
+      - { name: value_numeric, type: double }
+      - { name: value_string, type: string }
+      - { name: unit, type: string }
+      - { name: status, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: observations
+          schema: dbo
+        propertyBindings:
+          observation_id: observation_id
+          patient_id: patient_id
+          encounter_id: encounter_id
+          code_system: code_system
+          code: code
+          code_display: code_display
+          category: category
+          effective_time: effective_time
+          value_numeric: value_numeric
+          value_string: value_string
+          unit: unit
+          status: status
+
+relationships:
+  - name: PatientPrimaryPractitioner
+    source_entity: Patient
+    target_entity: Practitioner
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: patients
+        sourceColumn: patient_id
+        targetColumn: primary_practitioner_id
+
+  - name: PatientPrimaryOrganization
+    source_entity: Patient
+    target_entity: Organization
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: patients
+        sourceColumn: patient_id
+        targetColumn: primary_organization_id
+
+  - name: PractitionerInOrganization
+    source_entity: Practitioner
+    target_entity: Organization
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: practitioners
+        sourceColumn: practitioner_id
+        targetColumn: organization_id
+
+  - name: EncounterForPatient
+    source_entity: Encounter
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+        sourceColumn: encounter_id
+        targetColumn: patient_id
+
+  - name: EncounterByPractitioner
+    source_entity: Encounter
+    target_entity: Practitioner
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+        sourceColumn: encounter_id
+        targetColumn: practitioner_id
+
+  - name: EncounterAtOrganization
+    source_entity: Encounter
+    target_entity: Organization
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+        sourceColumn: encounter_id
+        targetColumn: organization_id
+
+  - name: ConditionOfPatient
+    source_entity: Condition
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: conditions
+        sourceColumn: condition_id
+        targetColumn: patient_id
+
+  - name: ConditionInEncounter
+    source_entity: Condition
+    target_entity: Encounter
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: conditions
+        sourceColumn: condition_id
+        targetColumn: encounter_id
+
+  - name: ProcedureOnPatient
+    source_entity: Procedure
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: procedures
+        sourceColumn: procedure_id
+        targetColumn: patient_id
+
+  - name: ProcedureInEncounter
+    source_entity: Procedure
+    target_entity: Encounter
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: procedures
+        sourceColumn: procedure_id
+        targetColumn: encounter_id
+
+  - name: MedicationRequestForPatient
+    source_entity: MedicationRequest
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: medication_requests
+        sourceColumn: medication_request_id
+        targetColumn: patient_id
+
+  - name: MedicationRequestInEncounter
+    source_entity: MedicationRequest
+    target_entity: Encounter
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: medication_requests
+        sourceColumn: medication_request_id
+        targetColumn: encounter_id
+
+  - name: AllergyOfPatient
+    source_entity: AllergyIntolerance
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: allergies
+        sourceColumn: allergy_id
+        targetColumn: patient_id
+
+  - name: ObservationForPatient
+    source_entity: Observation
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: observations
+        sourceColumn: observation_id
+        targetColumn: patient_id
+
+  - name: ObservationInEncounter
+    source_entity: Observation
+    target_entity: Encounter
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: observations
+        sourceColumn: observation_id
+        targetColumn: encounter_id

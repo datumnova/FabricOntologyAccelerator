@@ -1,0 +1,4 @@
+property_id,property_name,brand,city,country,star_rating,total_rooms,timezone
+PROP001,Grand Hotel Paris Opera,Aurora Collection,Paris,FR,5,180,Europe/Paris
+PROP002,Aurora Milano Centrale,Aurora Collection,Milano,IT,4,120,Europe/Rome
+PROP003,Aurora Berlin Mitte,Aurora Collection,Berlin,DE,4,150,Europe/Berlin

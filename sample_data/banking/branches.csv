@@ -1,0 +1,5 @@
+branch_id,branch_name,branch_type,city,country,opened_on
+B001,Paris Opera,retail,Paris,FR,1998-09-01
+B002,Milano Duomo,retail,Milano,IT,2005-03-15
+B003,Berlin Mitte,advisory,Berlin,DE,2002-11-20
+B004,Lyon Part-Dieu,retail,Lyon,FR,2010-06-10

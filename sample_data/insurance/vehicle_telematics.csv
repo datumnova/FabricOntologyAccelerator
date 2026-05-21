@@ -1,0 +1,7 @@
+risk_object_id,event_time,latitude,longitude,speed_kph,heading_deg,harsh_braking_g,harsh_accel_g,cornering_g,phone_in_use,crash_detected,airbag_deployed,odometer_km
+RO001,2026-05-12T08:10:00Z,48.8566,2.3522,42.0,90.0,0.10,0.05,0.20,false,false,false,28450.0
+RO001,2026-05-12T08:11:00Z,48.8570,2.3540,46.0,90.0,0.08,0.04,0.18,false,false,false,28451.0
+RO003,2026-03-22T14:05:00Z,45.7640,4.8357,68.0,180.0,0.85,0.10,0.45,false,true,true,41200.0
+RO003,2026-03-22T14:05:05Z,45.7640,4.8357,0.0,180.0,1.20,0.00,0.00,false,true,true,41200.0
+RO004,2026-05-08T22:30:00Z,45.4642,9.1900,0.0,0.0,0.00,0.00,0.00,false,false,false,8950.0
+RO005,2026-05-12T11:42:00Z,45.7300,4.8400,95.0,200.0,0.75,0.15,0.60,true,true,false,12500.0

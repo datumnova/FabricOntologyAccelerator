@@ -1,0 +1,383 @@
+# Retail Banking - Customer 360 Accelerator
+# Aligned to BIAN service domains (Customer Profile, Customer Agreement, Current Account,
+# Card Authorization, Customer Interaction) and FIBO entity vocabulary
+# (fibo-fbc-pas-caa: Customer, Account; fibo-fnd-pty-pty: Party, PartyRelationship).
+#
+# Business value:
+#   - Single customer view across products, channels, and households
+#   - Next-best-action / cross-sell and churn modelling
+#   - Copilot "banker assistant" answering questions about a customer's footprint
+#   - Foundation for KYC, attrition, profitability and household-level analytics
+
+ontology:
+  displayName: RetailBankingCustomer360
+  description: Retail banking customer 360 ontology (BIAN/FIBO aligned)
+  namespace: banking
+  version: "1.0"
+
+entities:
+  - name: Customer
+    key: customer_id
+    display: full_name
+    properties:
+      - { name: customer_id, type: string }
+      - { name: full_name, type: string }
+      - { name: date_of_birth, type: datetime }
+      - { name: gender, type: string }
+      - { name: email, type: string }
+      - { name: phone, type: string }
+      - { name: residency_country, type: string }
+      - { name: tax_id, type: string }
+      - { name: kyc_status, type: string }
+      - { name: customer_segment, type: string }   # mass, affluent, private
+      - { name: lifecycle_status, type: string }   # prospect, active, dormant, closed
+      - { name: onboarded_on, type: datetime }
+      - { name: household_id, type: string }
+      - { name: primary_branch_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+          schema: dbo
+        propertyBindings:
+          customer_id: customer_id
+          full_name: full_name
+          date_of_birth: date_of_birth
+          gender: gender
+          email: email
+          phone: phone
+          residency_country: residency_country
+          tax_id: tax_id
+          kyc_status: kyc_status
+          customer_segment: customer_segment
+          lifecycle_status: lifecycle_status
+          onboarded_on: onboarded_on
+          household_id: household_id
+          primary_branch_id: primary_branch_id
+
+  - name: Household
+    key: household_id
+    display: household_name
+    properties:
+      - { name: household_id, type: string }
+      - { name: household_name, type: string }
+      - { name: household_segment, type: string }
+      - { name: total_aum, type: double }
+      - { name: member_count, type: bigint }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: households
+          schema: dbo
+        propertyBindings:
+          household_id: household_id
+          household_name: household_name
+          household_segment: household_segment
+          total_aum: total_aum
+          member_count: member_count
+
+  - name: Branch
+    key: branch_id
+    display: branch_name
+    properties:
+      - { name: branch_id, type: string }
+      - { name: branch_name, type: string }
+      - { name: branch_type, type: string }   # retail, advisory, atm-only
+      - { name: city, type: string }
+      - { name: country, type: string }
+      - { name: opened_on, type: datetime }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: branches
+          schema: dbo
+        propertyBindings:
+          branch_id: branch_id
+          branch_name: branch_name
+          branch_type: branch_type
+          city: city
+          country: country
+          opened_on: opened_on
+
+  - name: Product
+    key: product_id
+    display: product_name
+    properties:
+      - { name: product_id, type: string }
+      - { name: product_name, type: string }
+      - { name: product_family, type: string }   # deposit, lending, card, investment
+      - { name: product_subtype, type: string }  # checking, savings, mortgage, credit_card
+      - { name: currency, type: string }
+      - { name: base_interest_rate, type: double }
+      - { name: monthly_fee, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: products
+          schema: dbo
+        propertyBindings:
+          product_id: product_id
+          product_name: product_name
+          product_family: product_family
+          product_subtype: product_subtype
+          currency: currency
+          base_interest_rate: base_interest_rate
+          monthly_fee: monthly_fee
+
+  - name: Account
+    key: account_id
+    display: account_number
+    properties:
+      - { name: account_id, type: string }
+      - { name: account_number, type: string }
+      - { name: iban, type: string }
+      - { name: customer_id, type: string }
+      - { name: product_id, type: string }
+      - { name: currency, type: string }
+      - { name: opened_on, type: datetime }
+      - { name: closed_on, type: datetime }
+      - { name: status, type: string }            # active, dormant, closed
+      - { name: current_balance, type: double }
+      - { name: available_balance, type: double }
+      - { name: credit_limit, type: double }
+      - { name: branch_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+          schema: dbo
+        propertyBindings:
+          account_id: account_id
+          account_number: account_number
+          iban: iban
+          customer_id: customer_id
+          product_id: product_id
+          currency: currency
+          opened_on: opened_on
+          closed_on: closed_on
+          status: status
+          current_balance: current_balance
+          available_balance: available_balance
+          credit_limit: credit_limit
+          branch_id: branch_id
+
+  - name: Card
+    key: card_id
+    display: card_masked_number
+    properties:
+      - { name: card_id, type: string }
+      - { name: card_masked_number, type: string }
+      - { name: account_id, type: string }
+      - { name: customer_id, type: string }
+      - { name: card_network, type: string }      # visa, mastercard, amex
+      - { name: card_type, type: string }         # debit, credit, prepaid
+      - { name: issued_on, type: datetime }
+      - { name: expires_on, type: datetime }
+      - { name: status, type: string }            # active, blocked, expired
+      - { name: contactless_enabled, type: boolean }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: cards
+          schema: dbo
+        propertyBindings:
+          card_id: card_id
+          card_masked_number: card_masked_number
+          account_id: account_id
+          customer_id: customer_id
+          card_network: card_network
+          card_type: card_type
+          issued_on: issued_on
+          expires_on: expires_on
+          status: status
+          contactless_enabled: contactless_enabled
+
+  - name: Transaction
+    key: transaction_id
+    display: transaction_reference
+    properties:
+      - { name: transaction_id, type: string }
+      - { name: transaction_reference, type: string }
+      - { name: account_id, type: string }
+      - { name: card_id, type: string }
+      - { name: posted_at, type: datetime }
+      - { name: value_date, type: datetime }
+      - { name: amount, type: double }
+      - { name: currency, type: string }
+      - { name: direction, type: string }         # debit, credit
+      - { name: channel, type: string }           # branch, atm, online, mobile, pos
+      - { name: merchant_id, type: string }
+      - { name: merchant_category_code, type: string }
+      - { name: country_code, type: string }
+      - { name: description, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: transactions
+          schema: dbo
+        propertyBindings:
+          transaction_id: transaction_id
+          transaction_reference: transaction_reference
+          account_id: account_id
+          card_id: card_id
+          posted_at: posted_at
+          value_date: value_date
+          amount: amount
+          currency: currency
+          direction: direction
+          channel: channel
+          merchant_id: merchant_id
+          merchant_category_code: merchant_category_code
+          country_code: country_code
+          description: description
+
+  - name: Merchant
+    key: merchant_id
+    display: merchant_name
+    properties:
+      - { name: merchant_id, type: string }
+      - { name: merchant_name, type: string }
+      - { name: merchant_category_code, type: string }
+      - { name: country_code, type: string }
+      - { name: risk_score, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: merchants
+          schema: dbo
+        propertyBindings:
+          merchant_id: merchant_id
+          merchant_name: merchant_name
+          merchant_category_code: merchant_category_code
+          country_code: country_code
+          risk_score: risk_score
+
+  - name: Interaction
+    key: interaction_id
+    display: subject
+    properties:
+      - { name: interaction_id, type: string }
+      - { name: customer_id, type: string }
+      - { name: occurred_at, type: datetime }
+      - { name: channel, type: string }           # branch, contact-center, chatbot, mobile, web
+      - { name: interaction_type, type: string }  # complaint, advice, sales, service
+      - { name: subject, type: string }
+      - { name: sentiment, type: string }
+      - { name: resolved, type: boolean }
+      - { name: agent_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: interactions
+          schema: dbo
+        propertyBindings:
+          interaction_id: interaction_id
+          customer_id: customer_id
+          occurred_at: occurred_at
+          channel: channel
+          interaction_type: interaction_type
+          subject: subject
+          sentiment: sentiment
+          resolved: resolved
+          agent_id: agent_id
+
+relationships:
+  - name: CustomerInHousehold
+    source_entity: Customer
+    target_entity: Household
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+        sourceColumn: customer_id
+        targetColumn: household_id
+
+  - name: CustomerPrimaryBranch
+    source_entity: Customer
+    target_entity: Branch
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+        sourceColumn: customer_id
+        targetColumn: primary_branch_id
+
+  - name: AccountHeldByCustomer
+    source_entity: Account
+    target_entity: Customer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+        sourceColumn: account_id
+        targetColumn: customer_id
+
+  - name: AccountForProduct
+    source_entity: Account
+    target_entity: Product
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+        sourceColumn: account_id
+        targetColumn: product_id
+
+  - name: AccountAtBranch
+    source_entity: Account
+    target_entity: Branch
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+        sourceColumn: account_id
+        targetColumn: branch_id
+
+  - name: CardLinkedToAccount
+    source_entity: Card
+    target_entity: Account
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: cards
+        sourceColumn: card_id
+        targetColumn: account_id
+
+  - name: TransactionOnAccount
+    source_entity: Transaction
+    target_entity: Account
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: transactions
+        sourceColumn: transaction_id
+        targetColumn: account_id
+
+  - name: TransactionUsedCard
+    source_entity: Transaction
+    target_entity: Card
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: transactions
+        sourceColumn: transaction_id
+        targetColumn: card_id
+
+  - name: TransactionAtMerchant
+    source_entity: Transaction
+    target_entity: Merchant
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: transactions
+        sourceColumn: transaction_id
+        targetColumn: merchant_id
+
+  - name: InteractionWithCustomer
+    source_entity: Interaction
+    target_entity: Customer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: interactions
+        sourceColumn: interaction_id
+        targetColumn: customer_id

@@ -1,0 +1,138 @@
+# Healthcare - Patient 360 with Connected Device Vitals
+# Adds Eventhouse-bound vitals telemetry from wearables / bedside monitors / RPM kits.
+#
+# Business value:
+#   - Remote Patient Monitoring (RPM) for chronic disease management
+#   - Early-deterioration / sepsis alerts in inpatient settings
+#   - Continuous vitals fed to a Copilot "patient summary" alongside encounters
+#   - Population-level trending of cohort outcomes (BP, SpO2, HR)
+
+ontology:
+  displayName: PatientCare360_RPM
+  description: Patient 360 with connected-device vitals time-series bindings
+  namespace: healthcare
+  version: "1.0"
+
+entities:
+  - name: Patient
+    key: patient_id
+    display: full_name
+    properties:
+      - { name: patient_id, type: string }
+      - { name: mrn, type: string }
+      - { name: full_name, type: string }
+      - { name: birth_date, type: datetime }
+      - { name: gender, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: patients
+          schema: dbo
+        propertyBindings:
+          patient_id: patient_id
+          mrn: mrn
+          full_name: full_name
+          birth_date: birth_date
+          gender: gender
+
+  - name: Encounter
+    key: encounter_id
+    display: encounter_reference
+    properties:
+      - { name: encounter_id, type: string }
+      - { name: encounter_reference, type: string }
+      - { name: patient_id, type: string }
+      - { name: encounter_class, type: string }
+      - { name: status, type: string }
+      - { name: start_time, type: datetime }
+      - { name: end_time, type: datetime }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+          schema: dbo
+        propertyBindings:
+          encounter_id: encounter_id
+          encounter_reference: encounter_reference
+          patient_id: patient_id
+          encounter_class: encounter_class
+          status: status
+          start_time: start_time
+          end_time: end_time
+
+  - name: ConnectedDevice
+    key: device_id
+    display: display_name
+    properties:
+      - { name: device_id, type: string }
+      - { name: display_name, type: string }
+      - { name: patient_id, type: string }
+      - { name: device_type, type: string }       # bp_cuff, glucose, spo2, ecg, multi_vital
+      - { name: manufacturer, type: string }
+      - { name: model, type: string }
+      - { name: serial_number, type: string }
+      - { name: status, type: string }            # active, inactive, maintenance
+      - { name: assigned_on, type: datetime }
+    timeseriesProperties:
+      - { name: observed_at, type: datetime }
+      - { name: heart_rate_bpm, type: double }
+      - { name: systolic_mmhg, type: double }
+      - { name: diastolic_mmhg, type: double }
+      - { name: spo2_percent, type: double }
+      - { name: respiration_rate_bpm, type: double }
+      - { name: body_temperature_c, type: double }
+      - { name: blood_glucose_mgdl, type: double }
+      - { name: ecg_alert, type: boolean }
+      - { name: battery_percent, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: connected_devices
+          schema: dbo
+        propertyBindings:
+          device_id: device_id
+          display_name: display_name
+          patient_id: patient_id
+          device_type: device_type
+          manufacturer: manufacturer
+          model: model
+          serial_number: serial_number
+          status: status
+          assigned_on: assigned_on
+      - dataBindingType: TimeSeries
+        timestampColumnName: observed_at
+        source:
+          sourceType: KustoTable
+          table: device_vitals
+        propertyBindings:
+          observed_at: observed_at
+          heart_rate_bpm: heart_rate_bpm
+          systolic_mmhg: systolic_mmhg
+          diastolic_mmhg: diastolic_mmhg
+          spo2_percent: spo2_percent
+          respiration_rate_bpm: respiration_rate_bpm
+          body_temperature_c: body_temperature_c
+          blood_glucose_mgdl: blood_glucose_mgdl
+          ecg_alert: ecg_alert
+          battery_percent: battery_percent
+
+relationships:
+  - name: EncounterForPatient
+    source_entity: Encounter
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: encounters
+        sourceColumn: encounter_id
+        targetColumn: patient_id
+
+  - name: DeviceAssignedToPatient
+    source_entity: ConnectedDevice
+    target_entity: Patient
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: connected_devices
+        sourceColumn: device_id
+        targetColumn: patient_id

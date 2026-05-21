@@ -1,0 +1,7 @@
+room_type_id,property_id,room_type_code,room_type_name,max_occupancy,bed_configuration,square_meters
+RT001,PROP001,DLX,Deluxe Room,2,king,32.0
+RT002,PROP001,SUI,Junior Suite,3,king+sofa,55.0
+RT003,PROP002,STD,Standard Room,2,queen,24.0
+RT004,PROP002,DLX,Deluxe Room,2,king,30.0
+RT005,PROP003,STD,Standard Room,2,twin,22.0
+RT006,PROP003,EXE,Executive Room,2,king,34.0

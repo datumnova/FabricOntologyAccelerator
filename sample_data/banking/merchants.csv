@@ -1,0 +1,7 @@
+merchant_id,merchant_name,merchant_category_code,country_code,risk_score
+M001,Carrefour,5411,FR,0.10
+M002,Total Energies,5541,FR,0.15
+M003,Amazon EU,5942,LU,0.22
+M004,Lufthansa,4511,DE,0.18
+M005,Marriott Paris,7011,FR,0.12
+M006,UnknownVendor-XYZ,5999,RU,0.78

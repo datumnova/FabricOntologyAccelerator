@@ -1,0 +1,6 @@
+product_id,product_name,product_family,product_subtype,currency,base_interest_rate,monthly_fee
+P001,Everyday Checking,deposit,checking,EUR,0.0,2.00
+P002,High-Yield Savings,deposit,savings,EUR,2.75,0.00
+P003,Premier Credit Card,card,credit_card,EUR,15.90,0.00
+P004,Home Mortgage 20Y,lending,mortgage,EUR,3.40,0.00
+P005,Investment Portfolio,investment,managed,EUR,0.0,12.00

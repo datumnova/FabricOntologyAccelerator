@@ -10,6 +10,7 @@ Python CLI that creates Microsoft Fabric Ontology payloads from **YAML**, **Exce
 - Relationship contextualizations (bindings)
 - **Excel import** – define entities and relationships in a spreadsheet
 - **Semantic model enrichment** – pull tables/columns/relationships from a Power BI semantic model and enrich an existing ontology
+- **Sector accelerators** – ready-made, standards-aligned ontologies for Retail Banking, P&C Insurance, Healthcare and Hospitality (see [`accelerators/`](accelerators/README.md))
 - Optional direct call to the Fabric REST API
 
 ## YAML shape

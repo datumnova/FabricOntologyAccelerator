@@ -1,0 +1,7 @@
+observation_id,patient_id,encounter_id,code_system,code,code_display,category,effective_time,value_numeric,value_string,unit,status
+OBS001,PT0002,ENC002,LOINC,8480-6,Systolic blood pressure,vital-signs,2026-04-15T10:05:00Z,158.0,,mm[Hg],final
+OBS002,PT0002,ENC002,LOINC,8462-4,Diastolic blood pressure,vital-signs,2026-04-15T10:05:00Z,96.0,,mm[Hg],final
+OBS003,PT0004,ENC003,LOINC,2160-0,Creatinine,laboratory,2026-03-02T23:00:00Z,1.4,,mg/dL,final
+OBS004,PT0004,ENC003,LOINC,2089-1,LDL cholesterol,laboratory,2026-03-02T23:00:00Z,165.0,,mg/dL,final
+OBS005,PT0003,ENC005,LOINC,8867-4,Heart rate,vital-signs,2026-05-05T15:10:00Z,102.0,,/min,final
+OBS006,PT0005,ENC006,LOINC,8310-5,Body temperature,vital-signs,2026-05-10T20:15:00Z,37.4,,Cel,final

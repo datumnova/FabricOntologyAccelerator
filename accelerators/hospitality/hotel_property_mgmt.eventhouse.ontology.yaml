@@ -1,0 +1,144 @@
+# Travel & Hospitality - Hotel with Room IoT Telemetry
+# Adds Eventhouse-bound room IoT telemetry (HVAC, occupancy, energy, door lock,
+# environmental sensors). Streams from BMS / Matter / Z-Wave / KNX gateways.
+#
+# Business value:
+#   - Energy savings: HVAC setbacks when rooms are unoccupied (5-15% energy reduction)
+#   - Predictive housekeeping: prioritise turnaround based on real occupancy / DND
+#   - Real-time guest service: detect maintenance issues (temp drift, water leak)
+#     before the guest complains, reducing comp / refund spend
+#   - Sustainability reporting (kWh per occupied room) for ESG disclosures
+
+ontology:
+  displayName: HotelPropertyManagement_IoT
+  description: Hotel ontology with room IoT telemetry time-series bindings
+  namespace: hospitality
+  version: "1.0"
+
+entities:
+  - name: Property
+    key: property_id
+    display: property_name
+    properties:
+      - { name: property_id, type: string }
+      - { name: property_name, type: string }
+      - { name: brand, type: string }
+      - { name: city, type: string }
+      - { name: country, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: properties
+          schema: dbo
+        propertyBindings:
+          property_id: property_id
+          property_name: property_name
+          brand: brand
+          city: city
+          country: country
+
+  - name: Room
+    key: room_id
+    display: room_number
+    properties:
+      - { name: room_id, type: string }
+      - { name: property_id, type: string }
+      - { name: room_type_id, type: string }
+      - { name: room_number, type: string }
+      - { name: floor, type: bigint }
+      - { name: status, type: string }
+    timeseriesProperties:
+      - { name: sample_at, type: datetime }
+      - { name: is_occupied, type: boolean }
+      - { name: dnd_active, type: boolean }
+      - { name: temperature_c, type: double }
+      - { name: setpoint_c, type: double }
+      - { name: humidity_pct, type: double }
+      - { name: co2_ppm, type: double }
+      - { name: door_locked, type: boolean }
+      - { name: door_open, type: boolean }
+      - { name: window_open, type: boolean }
+      - { name: hvac_mode, type: string }            # off, cool, heat, eco
+      - { name: hvac_power_w, type: double }
+      - { name: lights_on, type: boolean }
+      - { name: lights_power_w, type: double }
+      - { name: water_leak_detected, type: boolean }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rooms
+          schema: dbo
+        propertyBindings:
+          room_id: room_id
+          property_id: property_id
+          room_type_id: room_type_id
+          room_number: room_number
+          floor: floor
+          status: status
+      - dataBindingType: TimeSeries
+        timestampColumnName: sample_at
+        source:
+          sourceType: KustoTable
+          table: room_telemetry
+        propertyBindings:
+          sample_at: sample_at
+          is_occupied: is_occupied
+          dnd_active: dnd_active
+          temperature_c: temperature_c
+          setpoint_c: setpoint_c
+          humidity_pct: humidity_pct
+          co2_ppm: co2_ppm
+          door_locked: door_locked
+          door_open: door_open
+          window_open: window_open
+          hvac_mode: hvac_mode
+          hvac_power_w: hvac_power_w
+          lights_on: lights_on
+          lights_power_w: lights_power_w
+          water_leak_detected: water_leak_detected
+
+  - name: Reservation
+    key: reservation_id
+    display: confirmation_number
+    properties:
+      - { name: reservation_id, type: string }
+      - { name: confirmation_number, type: string }
+      - { name: property_id, type: string }
+      - { name: guest_id, type: string }
+      - { name: arrival_date, type: datetime }
+      - { name: departure_date, type: datetime }
+      - { name: status, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+          schema: dbo
+        propertyBindings:
+          reservation_id: reservation_id
+          confirmation_number: confirmation_number
+          property_id: property_id
+          guest_id: guest_id
+          arrival_date: arrival_date
+          departure_date: departure_date
+          status: status
+
+relationships:
+  - name: RoomAtProperty
+    source_entity: Room
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rooms
+        sourceColumn: room_id
+        targetColumn: property_id
+
+  - name: ReservationAtProperty
+    source_entity: Reservation
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: property_id

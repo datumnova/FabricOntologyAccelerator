@@ -1,0 +1,129 @@
+# Retail Banking - Customer 360 with real-time Card Authorization stream
+# Adds an Eventhouse-bound time-series binding to Card so streaming authorizations
+# can be analysed jointly with the C360 graph.
+#
+# Business value:
+#   - Real-time fraud / unusual-activity detection feeding the same Copilot
+#   - Sub-second authorization analytics (decline rate by issuer/merchant/MCC)
+#   - "Where was my card used in the last 5 minutes?" Copilot answers
+
+ontology:
+  displayName: RetailBankingCustomer360_RealTime
+  description: Retail banking C360 ontology with card authorization telemetry
+  namespace: banking
+  version: "1.0"
+
+entities:
+  - name: Customer
+    key: customer_id
+    display: full_name
+    properties:
+      - { name: customer_id, type: string }
+      - { name: full_name, type: string }
+      - { name: customer_segment, type: string }
+      - { name: residency_country, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: customers
+          schema: dbo
+        propertyBindings:
+          customer_id: customer_id
+          full_name: full_name
+          customer_segment: customer_segment
+          residency_country: residency_country
+
+  - name: Account
+    key: account_id
+    display: account_number
+    properties:
+      - { name: account_id, type: string }
+      - { name: account_number, type: string }
+      - { name: customer_id, type: string }
+      - { name: currency, type: string }
+      - { name: status, type: string }
+      - { name: current_balance, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+          schema: dbo
+        propertyBindings:
+          account_id: account_id
+          account_number: account_number
+          customer_id: customer_id
+          currency: currency
+          status: status
+          current_balance: current_balance
+
+  - name: Card
+    key: card_id
+    display: card_masked_number
+    properties:
+      - { name: card_id, type: string }
+      - { name: card_masked_number, type: string }
+      - { name: account_id, type: string }
+      - { name: card_network, type: string }
+      - { name: card_type, type: string }
+      - { name: status, type: string }
+    timeseriesProperties:
+      - { name: authorized_at, type: datetime }
+      - { name: amount, type: double }
+      - { name: currency, type: string }
+      - { name: merchant_id, type: string }
+      - { name: merchant_category_code, type: string }
+      - { name: country_code, type: string }
+      - { name: decision, type: string }          # approved, declined, review
+      - { name: decline_reason, type: string }
+      - { name: risk_score, type: double }
+      - { name: is_card_present, type: boolean }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: cards
+          schema: dbo
+        propertyBindings:
+          card_id: card_id
+          card_masked_number: card_masked_number
+          account_id: account_id
+          card_network: card_network
+          card_type: card_type
+          status: status
+      - dataBindingType: TimeSeries
+        timestampColumnName: authorized_at
+        source:
+          sourceType: KustoTable
+          table: card_authorizations
+          # eventhouseId, clusterUri, databaseName can be supplied via CLI flags
+        propertyBindings:
+          authorized_at: authorized_at
+          amount: amount
+          currency: currency
+          merchant_id: merchant_id
+          merchant_category_code: merchant_category_code
+          country_code: country_code
+          decision: decision
+          decline_reason: decline_reason
+          risk_score: risk_score
+          is_card_present: is_card_present
+
+relationships:
+  - name: AccountHeldByCustomer
+    source_entity: Account
+    target_entity: Customer
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: accounts
+        sourceColumn: account_id
+        targetColumn: customer_id
+
+  - name: CardLinkedToAccount
+    source_entity: Card
+    target_entity: Account
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: cards
+        sourceColumn: card_id
+        targetColumn: account_id

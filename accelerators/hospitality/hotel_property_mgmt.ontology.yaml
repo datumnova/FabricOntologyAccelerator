@@ -1,0 +1,489 @@
+# Travel & Hospitality - Hotel / Property Management Accelerator
+# Aligned to standard PMS / HTNG-OpenTravel concepts:
+#   Guest, Reservation, Stay, Room, RoomType, RatePlan, Folio, Charge,
+#   Property, Channel, LoyaltyAccount, Service.
+#
+# Business value:
+#   - Revenue management (occupancy, ADR, RevPAR, length-of-stay analytics)
+#   - Channel mix optimisation and OTA cost-of-acquisition tracking
+#   - Personalisation, upsell, and loyalty engagement
+#   - Foundation for a Copilot "front-office assistant" answering guest/staff questions
+
+ontology:
+  displayName: HotelPropertyManagement
+  description: Hotel / property management ontology (PMS / HTNG-OpenTravel aligned)
+  namespace: hospitality
+  version: "1.0"
+
+entities:
+  - name: Guest
+    key: guest_id
+    display: full_name
+    properties:
+      - { name: guest_id, type: string }
+      - { name: full_name, type: string }
+      - { name: email, type: string }
+      - { name: phone, type: string }
+      - { name: birth_date, type: datetime }
+      - { name: nationality, type: string }
+      - { name: preferred_language, type: string }
+      - { name: vip_status, type: string }
+      - { name: marketing_optin, type: boolean }
+      - { name: loyalty_account_id, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: guests
+          schema: dbo
+        propertyBindings:
+          guest_id: guest_id
+          full_name: full_name
+          email: email
+          phone: phone
+          birth_date: birth_date
+          nationality: nationality
+          preferred_language: preferred_language
+          vip_status: vip_status
+          marketing_optin: marketing_optin
+          loyalty_account_id: loyalty_account_id
+
+  - name: LoyaltyAccount
+    key: loyalty_account_id
+    display: membership_number
+    properties:
+      - { name: loyalty_account_id, type: string }
+      - { name: membership_number, type: string }
+      - { name: tier, type: string }                 # silver, gold, platinum
+      - { name: points_balance, type: bigint }
+      - { name: lifetime_points, type: bigint }
+      - { name: enrolled_on, type: datetime }
+      - { name: status, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: loyalty_accounts
+          schema: dbo
+        propertyBindings:
+          loyalty_account_id: loyalty_account_id
+          membership_number: membership_number
+          tier: tier
+          points_balance: points_balance
+          lifetime_points: lifetime_points
+          enrolled_on: enrolled_on
+          status: status
+
+  - name: Property
+    key: property_id
+    display: property_name
+    properties:
+      - { name: property_id, type: string }
+      - { name: property_name, type: string }
+      - { name: brand, type: string }
+      - { name: city, type: string }
+      - { name: country, type: string }
+      - { name: star_rating, type: bigint }
+      - { name: total_rooms, type: bigint }
+      - { name: timezone, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: properties
+          schema: dbo
+        propertyBindings:
+          property_id: property_id
+          property_name: property_name
+          brand: brand
+          city: city
+          country: country
+          star_rating: star_rating
+          total_rooms: total_rooms
+          timezone: timezone
+
+  - name: RoomType
+    key: room_type_id
+    display: room_type_name
+    properties:
+      - { name: room_type_id, type: string }
+      - { name: property_id, type: string }
+      - { name: room_type_code, type: string }
+      - { name: room_type_name, type: string }
+      - { name: max_occupancy, type: bigint }
+      - { name: bed_configuration, type: string }
+      - { name: square_meters, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: room_types
+          schema: dbo
+        propertyBindings:
+          room_type_id: room_type_id
+          property_id: property_id
+          room_type_code: room_type_code
+          room_type_name: room_type_name
+          max_occupancy: max_occupancy
+          bed_configuration: bed_configuration
+          square_meters: square_meters
+
+  - name: Room
+    key: room_id
+    display: room_number
+    properties:
+      - { name: room_id, type: string }
+      - { name: property_id, type: string }
+      - { name: room_type_id, type: string }
+      - { name: room_number, type: string }
+      - { name: floor, type: bigint }
+      - { name: status, type: string }              # available, occupied, oo, dirty, clean
+      - { name: accessible, type: boolean }
+      - { name: view, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rooms
+          schema: dbo
+        propertyBindings:
+          room_id: room_id
+          property_id: property_id
+          room_type_id: room_type_id
+          room_number: room_number
+          floor: floor
+          status: status
+          accessible: accessible
+          view: view
+
+  - name: RatePlan
+    key: rate_plan_id
+    display: rate_plan_name
+    properties:
+      - { name: rate_plan_id, type: string }
+      - { name: property_id, type: string }
+      - { name: rate_plan_code, type: string }
+      - { name: rate_plan_name, type: string }
+      - { name: rate_category, type: string }      # bar, corporate, promo, package
+      - { name: cancellation_policy, type: string }
+      - { name: meal_plan, type: string }          # rooms_only, bb, hb, fb, ai
+      - { name: currency, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rate_plans
+          schema: dbo
+        propertyBindings:
+          rate_plan_id: rate_plan_id
+          property_id: property_id
+          rate_plan_code: rate_plan_code
+          rate_plan_name: rate_plan_name
+          rate_category: rate_category
+          cancellation_policy: cancellation_policy
+          meal_plan: meal_plan
+          currency: currency
+
+  - name: Channel
+    key: channel_id
+    display: channel_name
+    properties:
+      - { name: channel_id, type: string }
+      - { name: channel_name, type: string }
+      - { name: channel_type, type: string }       # direct_web, direct_call, ota, gds, corporate
+      - { name: commission_pct, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: channels
+          schema: dbo
+        propertyBindings:
+          channel_id: channel_id
+          channel_name: channel_name
+          channel_type: channel_type
+          commission_pct: commission_pct
+
+  - name: Reservation
+    key: reservation_id
+    display: confirmation_number
+    properties:
+      - { name: reservation_id, type: string }
+      - { name: confirmation_number, type: string }
+      - { name: guest_id, type: string }
+      - { name: property_id, type: string }
+      - { name: room_type_id, type: string }
+      - { name: rate_plan_id, type: string }
+      - { name: channel_id, type: string }
+      - { name: status, type: string }             # reserved, checked_in, checked_out, cancelled, no_show
+      - { name: booked_at, type: datetime }
+      - { name: arrival_date, type: datetime }
+      - { name: departure_date, type: datetime }
+      - { name: nights, type: bigint }
+      - { name: adults, type: bigint }
+      - { name: children, type: bigint }
+      - { name: average_daily_rate, type: double }
+      - { name: total_room_revenue, type: double }
+      - { name: currency, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+          schema: dbo
+        propertyBindings:
+          reservation_id: reservation_id
+          confirmation_number: confirmation_number
+          guest_id: guest_id
+          property_id: property_id
+          room_type_id: room_type_id
+          rate_plan_id: rate_plan_id
+          channel_id: channel_id
+          status: status
+          booked_at: booked_at
+          arrival_date: arrival_date
+          departure_date: departure_date
+          nights: nights
+          adults: adults
+          children: children
+          average_daily_rate: average_daily_rate
+          total_room_revenue: total_room_revenue
+          currency: currency
+
+  - name: Stay
+    key: stay_id
+    display: stay_reference
+    properties:
+      - { name: stay_id, type: string }
+      - { name: stay_reference, type: string }
+      - { name: reservation_id, type: string }
+      - { name: room_id, type: string }
+      - { name: guest_id, type: string }
+      - { name: check_in_at, type: datetime }
+      - { name: check_out_at, type: datetime }
+      - { name: status, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: stays
+          schema: dbo
+        propertyBindings:
+          stay_id: stay_id
+          stay_reference: stay_reference
+          reservation_id: reservation_id
+          room_id: room_id
+          guest_id: guest_id
+          check_in_at: check_in_at
+          check_out_at: check_out_at
+          status: status
+
+  - name: Folio
+    key: folio_id
+    display: folio_number
+    properties:
+      - { name: folio_id, type: string }
+      - { name: folio_number, type: string }
+      - { name: stay_id, type: string }
+      - { name: guest_id, type: string }
+      - { name: opened_at, type: datetime }
+      - { name: closed_at, type: datetime }
+      - { name: total_amount, type: double }
+      - { name: balance_due, type: double }
+      - { name: currency, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: folios
+          schema: dbo
+        propertyBindings:
+          folio_id: folio_id
+          folio_number: folio_number
+          stay_id: stay_id
+          guest_id: guest_id
+          opened_at: opened_at
+          closed_at: closed_at
+          total_amount: total_amount
+          balance_due: balance_due
+          currency: currency
+
+  - name: FolioCharge
+    key: charge_id
+    display: description
+    properties:
+      - { name: charge_id, type: string }
+      - { name: folio_id, type: string }
+      - { name: posted_at, type: datetime }
+      - { name: charge_category, type: string }   # room, fb, spa, parking, tax, fee
+      - { name: description, type: string }
+      - { name: quantity, type: double }
+      - { name: unit_amount, type: double }
+      - { name: amount, type: double }
+      - { name: currency, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: folio_charges
+          schema: dbo
+        propertyBindings:
+          charge_id: charge_id
+          folio_id: folio_id
+          posted_at: posted_at
+          charge_category: charge_category
+          description: description
+          quantity: quantity
+          unit_amount: unit_amount
+          amount: amount
+          currency: currency
+
+relationships:
+  - name: GuestLoyaltyAccount
+    source_entity: Guest
+    target_entity: LoyaltyAccount
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: guests
+        sourceColumn: guest_id
+        targetColumn: loyalty_account_id
+
+  - name: RoomTypeAtProperty
+    source_entity: RoomType
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: room_types
+        sourceColumn: room_type_id
+        targetColumn: property_id
+
+  - name: RoomAtProperty
+    source_entity: Room
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rooms
+        sourceColumn: room_id
+        targetColumn: property_id
+
+  - name: RoomOfType
+    source_entity: Room
+    target_entity: RoomType
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rooms
+        sourceColumn: room_id
+        targetColumn: room_type_id
+
+  - name: RatePlanAtProperty
+    source_entity: RatePlan
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: rate_plans
+        sourceColumn: rate_plan_id
+        targetColumn: property_id
+
+  - name: ReservationForGuest
+    source_entity: Reservation
+    target_entity: Guest
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: guest_id
+
+  - name: ReservationAtProperty
+    source_entity: Reservation
+    target_entity: Property
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: property_id
+
+  - name: ReservationForRoomType
+    source_entity: Reservation
+    target_entity: RoomType
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: room_type_id
+
+  - name: ReservationOnRatePlan
+    source_entity: Reservation
+    target_entity: RatePlan
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: rate_plan_id
+
+  - name: ReservationViaChannel
+    source_entity: Reservation
+    target_entity: Channel
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: reservations
+        sourceColumn: reservation_id
+        targetColumn: channel_id
+
+  - name: StayForReservation
+    source_entity: Stay
+    target_entity: Reservation
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: stays
+        sourceColumn: stay_id
+        targetColumn: reservation_id
+
+  - name: StayInRoom
+    source_entity: Stay
+    target_entity: Room
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: stays
+        sourceColumn: stay_id
+        targetColumn: room_id
+
+  - name: StayForGuest
+    source_entity: Stay
+    target_entity: Guest
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: stays
+        sourceColumn: stay_id
+        targetColumn: guest_id
+
+  - name: FolioForStay
+    source_entity: Folio
+    target_entity: Stay
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: folios
+        sourceColumn: folio_id
+        targetColumn: stay_id
+
+  - name: FolioForGuest
+    source_entity: Folio
+    target_entity: Guest
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: folios
+        sourceColumn: folio_id
+        targetColumn: guest_id
+
+  - name: ChargeOnFolio
+    source_entity: FolioCharge
+    target_entity: Folio
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: folio_charges
+        sourceColumn: charge_id
+        targetColumn: folio_id

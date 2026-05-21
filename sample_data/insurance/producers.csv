@@ -1,0 +1,4 @@
+producer_id,producer_name,producer_type,agency_id,license_number,appointed_on,state_or_region
+PR001,Sophie Bernard,agent,AG-001,LIC-FR-12345,2015-04-01,Ile-de-France
+PR002,Marco Bianchi,broker,AG-002,LIC-IT-67890,2018-09-15,Lombardia
+PR003,Karim Haddad,agent,AG-001,LIC-FR-22222,2020-01-10,Auvergne-Rhone-Alpes

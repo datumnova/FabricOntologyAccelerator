@@ -1,0 +1,8 @@
+room_id,property_id,room_type_id,room_number,floor,status,accessible,view
+RM0001,PROP001,RT001,301,3,occupied,false,city
+RM0002,PROP001,RT001,302,3,clean,false,city
+RM0003,PROP001,RT002,505,5,occupied,false,courtyard
+RM0004,PROP002,RT003,210,2,dirty,false,street
+RM0005,PROP002,RT004,401,4,occupied,false,duomo
+RM0006,PROP003,RT005,112,1,clean,true,street
+RM0007,PROP003,RT006,720,7,occupied,false,city

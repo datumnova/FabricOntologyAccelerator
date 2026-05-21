@@ -1,0 +1,171 @@
+# Insurance - P&C with Vehicle Telematics Accelerator
+# Adds Eventhouse-bound telematics streams to the RiskObject (vehicle).
+#
+# Business value:
+#   - Usage-Based Insurance (UBI) / Pay-How-You-Drive pricing
+#   - Automated First Notice of Loss (FNOL) triage from crash signals
+#   - Driver behaviour scoring for renewals and discounts
+#   - Fraud detection: telematics-corroborated claim circumstances
+
+ontology:
+  displayName: PandCPolicyClaims_Telematics
+  description: P&C policy/claims ontology with vehicle telematics time-series bindings
+  namespace: insurance
+  version: "1.0"
+
+entities:
+  - name: Party
+    key: party_id
+    display: display_name
+    properties:
+      - { name: party_id, type: string }
+      - { name: display_name, type: string }
+      - { name: party_type, type: string }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: parties
+          schema: dbo
+        propertyBindings:
+          party_id: party_id
+          display_name: display_name
+          party_type: party_type
+
+  - name: Policy
+    key: policy_id
+    display: policy_number
+    properties:
+      - { name: policy_id, type: string }
+      - { name: policy_number, type: string }
+      - { name: policyholder_id, type: string }
+      - { name: line_of_business, type: string }
+      - { name: status, type: string }
+      - { name: written_premium, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: policies
+          schema: dbo
+        propertyBindings:
+          policy_id: policy_id
+          policy_number: policy_number
+          policyholder_id: policyholder_id
+          line_of_business: line_of_business
+          status: status
+          written_premium: written_premium
+
+  - name: RiskObject
+    key: risk_object_id
+    display: display_name
+    properties:
+      - { name: risk_object_id, type: string }
+      - { name: display_name, type: string }
+      - { name: risk_object_type, type: string }
+      - { name: vin, type: string }
+      - { name: make, type: string }
+      - { name: model, type: string }
+      - { name: year, type: bigint }
+    timeseriesProperties:
+      - { name: event_time, type: datetime }
+      - { name: latitude, type: double }
+      - { name: longitude, type: double }
+      - { name: speed_kph, type: double }
+      - { name: heading_deg, type: double }
+      - { name: harsh_braking_g, type: double }
+      - { name: harsh_accel_g, type: double }
+      - { name: cornering_g, type: double }
+      - { name: phone_in_use, type: boolean }
+      - { name: crash_detected, type: boolean }
+      - { name: airbag_deployed, type: boolean }
+      - { name: odometer_km, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: risk_objects
+          schema: dbo
+        propertyBindings:
+          risk_object_id: risk_object_id
+          display_name: display_name
+          risk_object_type: risk_object_type
+          vin: vin
+          make: make
+          model: model
+          year: year
+      - dataBindingType: TimeSeries
+        timestampColumnName: event_time
+        source:
+          sourceType: KustoTable
+          table: vehicle_telematics
+        propertyBindings:
+          event_time: event_time
+          latitude: latitude
+          longitude: longitude
+          speed_kph: speed_kph
+          heading_deg: heading_deg
+          harsh_braking_g: harsh_braking_g
+          harsh_accel_g: harsh_accel_g
+          cornering_g: cornering_g
+          phone_in_use: phone_in_use
+          crash_detected: crash_detected
+          airbag_deployed: airbag_deployed
+          odometer_km: odometer_km
+
+  - name: Claim
+    key: claim_id
+    display: claim_number
+    properties:
+      - { name: claim_id, type: string }
+      - { name: claim_number, type: string }
+      - { name: policy_id, type: string }
+      - { name: risk_object_id, type: string }
+      - { name: loss_date, type: datetime }
+      - { name: status, type: string }
+      - { name: severity, type: string }
+      - { name: total_incurred, type: double }
+      - { name: fraud_score, type: double }
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+          schema: dbo
+        propertyBindings:
+          claim_id: claim_id
+          claim_number: claim_number
+          policy_id: policy_id
+          risk_object_id: risk_object_id
+          loss_date: loss_date
+          status: status
+          severity: severity
+          total_incurred: total_incurred
+          fraud_score: fraud_score
+
+relationships:
+  - name: PolicyHeldByParty
+    source_entity: Policy
+    target_entity: Party
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: policies
+        sourceColumn: policy_id
+        targetColumn: policyholder_id
+
+  - name: ClaimOnPolicy
+    source_entity: Claim
+    target_entity: Policy
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: policy_id
+
+  - name: ClaimOnRiskObject
+    source_entity: Claim
+    target_entity: RiskObject
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: risk_object_id

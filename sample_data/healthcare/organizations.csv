@@ -1,0 +1,5 @@
+organization_id,name,organization_type,city,state_or_region,country
+ORG001,Hopital Saint-Louis,hospital,Paris,Ile-de-France,FR
+ORG002,Ospedale Niguarda,hospital,Milano,Lombardia,IT
+ORG003,Charite Berlin,hospital,Berlin,Berlin,DE
+ORG004,LabCorp Paris,lab,Paris,Ile-de-France,FR

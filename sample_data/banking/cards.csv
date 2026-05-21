@@ -1,0 +1,6 @@
+card_id,card_masked_number,account_id,customer_id,card_network,card_type,issued_on,expires_on,status,contactless_enabled
+CRD001,4532-XXXX-XXXX-1101,A0001,C0001,visa,debit,2023-05-01,2027-04-30,active,true
+CRD002,5412-XXXX-XXXX-2202,A0001,C0001,mastercard,credit,2023-05-01,2027-04-30,active,true
+CRD003,4532-XXXX-XXXX-3303,A0003,C0002,visa,debit,2022-09-15,2026-09-30,active,true
+CRD004,3782-XXXXXX-X4404,A0005,C0004,amex,credit,2021-01-10,2026-01-31,active,true
+CRD005,4532-XXXX-XXXX-5505,A0004,C0003,visa,debit,2024-03-01,2028-02-29,active,true

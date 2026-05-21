@@ -1,0 +1,6 @@
+policy_id,policy_number,policyholder_id,producer_id,line_of_business,product_code,effective_date,expiration_date,status,written_premium,earned_premium,currency,renewal_of_policy_id
+POL001,FR-AUTO-2025-0001,P0001,PR001,auto,AUTO-COMP,2025-06-01,2026-05-31,in_force,820.00,820.00,EUR,
+POL002,FR-HOME-2025-0002,P0001,PR001,home,HOME-MR,2025-06-01,2026-05-31,in_force,540.00,540.00,EUR,
+POL003,FR-AUTO-2025-0003,P0002,PR001,auto,AUTO-COMP,2025-09-15,2026-09-14,in_force,1100.00,690.00,EUR,
+POL004,IT-AUTO-2025-0004,P0003,PR002,auto,AUTO-TPO,2025-04-10,2026-04-09,in_force,420.00,420.00,EUR,
+POL005,FR-FLEET-2025-0005,P0004,PR003,commercial_auto,FLEET,2025-01-01,2025-12-31,in_force,18000.00,16500.00,EUR,

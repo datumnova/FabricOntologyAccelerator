@@ -1,0 +1,6 @@
+claim_id,claim_number,policy_id,risk_object_id,claimant_id,adjuster_id,loss_date,reported_date,closed_date,status,cause_of_loss,severity,loss_location,total_incurred,total_paid,reserve_amount,fraud_score,subrogation_amount
+CLM001,CLM-2026-0001,POL001,RO001,P0001,ADJ001,2026-02-14,2026-02-15,2026-04-01,closed,collision,minor,"Paris A86",3200.00,2700.00,0.00,0.08,0.00
+CLM002,CLM-2026-0002,POL003,RO003,P0002,ADJ001,2026-03-22,2026-03-22,,in_review,collision,moderate,"Lyon ring road",18500.00,5000.00,13500.00,0.42,8000.00
+CLM003,CLM-2026-0003,POL002,RO002,P0001,ADJ002,2026-04-05,2026-04-06,,open,water_damage,major,"12 rue de Rivoli",42000.00,12000.00,30000.00,0.15,0.00
+CLM004,CLM-2026-0004,POL004,RO004,P0003,ADJ002,2026-05-08,2026-05-09,,open,theft,total_loss,"Milano centro",18000.00,0.00,18000.00,0.65,0.00
+CLM005,CLM-2026-0005,POL005,RO005,P0004,ADJ003,2026-05-12,2026-05-12,,in_review,collision,major,"A7 Lyon-Marseille",26000.00,4000.00,22000.00,0.10,12000.00

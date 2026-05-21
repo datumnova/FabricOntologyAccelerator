@@ -1,0 +1,5 @@
+practitioner_id,npi,full_name,specialty,qualification,organization_id,active
+PRA001,1234567890,Dr Helene Moreau,general_practice,MD,ORG001,true
+PRA002,2345678901,Dr Giuseppe Verdi,cardiology,MD,ORG002,true
+PRA003,3456789012,Dr Klaus Weber,internal_medicine,MD,ORG003,true
+PRA004,4567890123,Dr Sophie Laurent,emergency_medicine,MD,ORG001,true
