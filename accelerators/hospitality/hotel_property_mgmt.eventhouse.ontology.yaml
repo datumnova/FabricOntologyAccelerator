@@ -13,6 +13,7 @@ ontology:
   displayName: HotelPropertyManagement_IoT
   description: Hotel ontology with room IoT telemetry time-series bindings
   namespace: hospitality
+  version: "1.0"
 
 entities:
   - name: Property

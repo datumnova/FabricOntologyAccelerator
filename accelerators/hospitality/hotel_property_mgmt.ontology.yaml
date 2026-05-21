@@ -13,6 +13,7 @@ ontology:
   displayName: HotelPropertyManagement
   description: Hotel / property management ontology (PMS / HTNG-OpenTravel aligned)
   namespace: hospitality
+  version: "1.0"
 
 entities:
   - name: Guest

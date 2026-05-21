@@ -11,6 +11,7 @@ ontology:
   displayName: PandCPolicyClaims_Telematics
   description: P&C policy/claims ontology with vehicle telematics time-series bindings
   namespace: insurance
+  version: "1.0"
 
 entities:
   - name: Party

@@ -11,6 +11,7 @@ ontology:
   displayName: PatientCare360_RPM
   description: Patient 360 with connected-device vitals time-series bindings
   namespace: healthcare
+  version: "1.0"
 
 entities:
   - name: Patient

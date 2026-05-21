@@ -15,6 +15,7 @@ ontology:
   displayName: PatientCare360
   description: Patient 360 ontology aligned to HL7 FHIR R4
   namespace: healthcare
+  version: "1.0"
 
 entities:
   - name: Patient

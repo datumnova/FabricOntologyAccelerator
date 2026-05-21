@@ -11,6 +11,7 @@ ontology:
   displayName: RetailBankingCustomer360_RealTime
   description: Retail banking C360 ontology with card authorization telemetry
   namespace: banking
+  version: "1.0"
 
 entities:
   - name: Customer

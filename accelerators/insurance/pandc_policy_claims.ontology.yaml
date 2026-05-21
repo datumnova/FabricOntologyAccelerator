@@ -12,6 +12,7 @@ ontology:
   displayName: PandCPolicyClaims
   description: Property & Casualty insurance policy and claims ontology (ACORD aligned)
   namespace: insurance
+  version: "1.0"
 
 entities:
   - name: Party
@@ -178,6 +179,7 @@ entities:
       - { name: claim_id, type: string }
       - { name: claim_number, type: string }
       - { name: policy_id, type: string }
+      - { name: risk_object_id, type: string }
       - { name: claimant_id, type: string }
       - { name: adjuster_id, type: string }
       - { name: loss_date, type: datetime }
@@ -201,6 +203,7 @@ entities:
           claim_id: claim_id
           claim_number: claim_number
           policy_id: policy_id
+          risk_object_id: risk_object_id
           claimant_id: claimant_id
           adjuster_id: adjuster_id
           loss_date: loss_date
@@ -343,6 +346,16 @@ relationships:
           table: claims
         sourceColumn: claim_id
         targetColumn: policy_id
+
+  - name: ClaimOnRiskObject
+    source_entity: Claim
+    target_entity: RiskObject
+    bindings:
+      - source:
+          sourceType: LakehouseTable
+          table: claims
+        sourceColumn: claim_id
+        targetColumn: risk_object_id
 
   - name: ClaimantParty
     source_entity: Claim

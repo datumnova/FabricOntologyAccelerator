@@ -13,6 +13,7 @@ ontology:
   displayName: RetailBankingCustomer360
   description: Retail banking customer 360 ontology (BIAN/FIBO aligned)
   namespace: banking
+  version: "1.0"
 
 entities:
   - name: Customer

@@ -15,7 +15,7 @@ accelerator generate a valid Fabric payload out of the box.
 | B1 | Retail Banking - Customer 360 | BIAN service domains, FIBO entities | Card authorization stream | [accelerators/banking](banking/) |
 | I1 | P&C Policy + Claims | ACORD Reference Architecture | Vehicle telematics (UBI / FNOL) | [accelerators/insurance](insurance/) |
 | H1 | Patient 360 | HL7 FHIR R4 resources | Connected-device vitals (RPM) | [accelerators/healthcare](healthcare/) |
-| T2 | Hotel / Property Mgmt | PMS / HTNG-OpenTravel | Room IoT (HVAC, occupancy, energy) | [accelerators/travel](travel/) |
+| T2 | Hotel / Property Mgmt | PMS / HTNG-OpenTravel | Room IoT (HVAC, occupancy, energy) | [accelerators/hospitality](hospitality/) |
 
 ## Files per accelerator
 
