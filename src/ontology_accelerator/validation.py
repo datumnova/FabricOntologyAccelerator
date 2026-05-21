@@ -32,6 +32,19 @@ def validate_config(cfg):
         if display not in prop_names:
             raise ValueError(f"Entity '{name}' display '{display}' was not found in properties")
 
+        # Collect all registered property names (standard + timeseries)
+        ts_prop_names = {p.get("name") for p in entity.get("timeseriesProperties", [])}
+        all_prop_names = prop_names | ts_prop_names
+
+        # Validate binding property references
+        for binding in entity.get("bindings", []):
+            for col, prop_name in (binding.get("propertyBindings") or {}).items():
+                if prop_name not in all_prop_names:
+                    raise ValueError(
+                        f"Entity '{name}' binding maps column '{col}' to unknown property "
+                        f"'{prop_name}'. Known properties: {', '.join(sorted(all_prop_names))}"
+                    )
+
         # Validate bindings
         for binding in entity.get("bindings", []):
             source = binding.get("source", {})

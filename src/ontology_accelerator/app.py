@@ -102,6 +102,8 @@ def run(args):
     if args.apply:
         if not args.workspace_id:
             raise ValueError("--workspace-id is required with --apply")
+        if not token:
+            raise ValueError("--apply requires a Fabric token. Provide --token or set FABRIC_TOKEN.")
         result = create_or_update(args, payload)
         api_out = str(Path(args.output).with_suffix(".result.json"))
         write_output(api_out, result)
